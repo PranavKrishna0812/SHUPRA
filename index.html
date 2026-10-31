@@ -1,0 +1,1129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shupra 3D — Custom 3D Printing &amp; Sacred Art</title>
+    <meta name="description" content="Shupra 3D offers precision custom 3D printing, curated ready-made collectibles, and exquisitely crafted sacred idols in matte, silk, and stone PLA.">
+    <meta name="keywords" content="3D printing, custom prints, sacred idols, Ganesha, Nataraja, figurines, 3D printed art, PLA printing, precision 3D prints">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- ======================== ANNOUNCEMENT BAR ======================== -->
+    <div class="announcement-bar" id="announcementBar">
+        <div class="announcement-bar__track">
+            <span>Free Shipping on orders above ₹2,999</span>
+            <span class="announcement-bar__sep">✦</span>
+            <span>New Sacred Collection — Now Live</span>
+            <span class="announcement-bar__sep">✦</span>
+            <span>Express Delivery Available Across India</span>
+            <span class="announcement-bar__sep">✦</span>
+            <span>Free Shipping on orders above ₹2,999</span>
+            <span class="announcement-bar__sep">✦</span>
+            <span>New Sacred Collection — Now Live</span>
+            <span class="announcement-bar__sep">✦</span>
+            <span>Express Delivery Available Across India</span>
+        </div>
+        <button class="announcement-bar__close" id="announcementClose" aria-label="Close announcement">✕</button>
+    </div>
+
+    <!-- ======================== NAVIGATION ======================== -->
+    <header class="nav" id="navbar">
+        <div class="nav__container">
+            <a href="index.html" class="nav__logo">
+                <svg class="nav__logo-icon" width="28" height="28" viewBox="0 0 32 32" fill="none">
+                    <path d="M16 2L28 9V23L16 30L4 23V9L16 2Z" stroke="#E8E8E8" stroke-width="1.5" fill="rgba(255,255,255,0.05)"/>
+                    <path d="M16 2L28 9L16 16L4 9L16 2Z" fill="rgba(255,255,255,0.1)" stroke="#E8E8E8" stroke-width="1"/>
+                    <path d="M16 16V30" stroke="#E8E8E8" stroke-width="1" opacity="0.4"/>
+                </svg>
+                Shupra 3D
+            </a>
+            <nav class="nav__menu" id="navMenu">
+                <a href="#services" class="nav__link">Services</a>
+                <a href="collection.html" class="nav__link">Collection</a>
+                <a href="#materials" class="nav__link">Materials</a>
+                <a href="#process" class="nav__link">Process</a>
+                <a href="#testimonials" class="nav__link">Reviews</a>
+            </nav>
+            <div class="nav__actions">
+                <button class="nav__icon-btn" id="searchToggle" aria-label="Search">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+                    </svg>
+                </button>
+                <button class="nav__icon-btn" id="wishlistNavBtn" aria-label="Wishlist">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+                    </svg>
+                    <span class="nav__badge" id="wishlistBadge" style="display:none">0</span>
+                </button>
+                <button class="nav__icon-btn nav__cart-btn" id="cartToggle" aria-label="Cart">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/>
+                    </svg>
+                    <span class="nav__badge" id="cartBadge" style="display:none">0</span>
+                </button>
+                <!-- User Account / Sign In Container -->
+                <div class="nav__auth-container" id="navAuthContainer">
+                    <button class="nav__user-btn" id="navUserBtn" aria-label="Sign In / Account">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
+                        </svg>
+                        <span class="nav__user-label" id="navUserLabel">Sign In</span>
+                    </button>
+                    <!-- User Profile Dropdown (when logged in) -->
+                    <div class="nav__user-dropdown" id="navUserDropdown" style="display:none;">
+                        <div class="nav__user-dropdown-header">
+                            <div class="nav__user-avatar">👤</div>
+                            <div>
+                                <div class="nav__user-phone" id="userDropdownPhone">+91 98765 43210</div>
+                                <div class="nav__user-status">Verified Customer</div>
+                            </div>
+                        </div>
+                        <div class="nav__user-dropdown-divider"></div>
+                        <button class="nav__dropdown-item" id="dropdownFeedbackBtn" aria-label="Share Customer Feedback">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                            <span>Share Feedback</span>
+                        </button>
+                        <button class="nav__dropdown-item nav__dropdown-item--danger" id="dropdownLogoutBtn" aria-label="Sign Out">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+                            <span>Sign Out</span>
+                        </button>
+                    </div>
+                </div>
+                <a href="#contact" class="btn btn--primary nav__cta">Get a Quote</a>
+            </div>
+            <button class="nav__toggle" id="navToggle" aria-label="Toggle navigation menu">
+                <span></span><span></span><span></span>
+            </button>
+        </div>
+        <!-- Inline search bar -->
+        <div class="nav__search" id="navSearch" data-lenis-prevent>
+            <div class="nav__search-inner">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+                <input type="search" id="searchInput" placeholder="Search prints, idols, materials…" aria-label="Search products">
+                <button id="searchClose" aria-label="Close search">✕</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- ======================== CART DRAWER ======================== -->
+    <div class="cart-overlay" id="cartOverlay"></div>
+    <aside class="cart-drawer" id="cartDrawer" aria-label="Shopping cart" data-lenis-prevent>
+        <div class="cart-drawer__header">
+            <h3>Your Cart</h3>
+            <button class="cart-drawer__close" id="cartClose" aria-label="Close cart">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            </button>
+        </div>
+        <div class="cart-drawer__body" id="cartBody">
+            <div class="cart-empty" id="cartEmpty">
+                <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" opacity="0.3"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+                <p>Your cart is empty</p>
+                <a href="#gallery" class="btn btn--outline" id="cartShopNow">Browse Collection</a>
+            </div>
+            <div class="cart-items" id="cartItems"></div>
+        </div>
+        <div class="cart-drawer__footer" id="cartFooter" style="display:none">
+            <div class="cart-subtotal">
+                <span>Subtotal</span>
+                <span id="cartSubtotal">₹0</span>
+            </div>
+            <p class="cart-shipping-note">Shipping calculated at checkout · Free over ₹2,999</p>
+            <button class="btn btn--primary btn--full" id="cartCheckoutBtn" aria-label="Proceed to Checkout">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                Proceed to Checkout
+            </button>
+        </div>
+    </aside>
+
+    <!-- ======================== TOAST CONTAINER ======================== -->
+    <div class="toast-container" id="toastContainer" aria-live="polite"></div>
+
+    <!-- ======================== CHECKOUT & SHEETS SYNC MODAL ======================== -->
+    <div class="modal-overlay" id="checkoutModalOverlay">
+        <div class="modal-container" data-lenis-prevent>
+            <button class="modal-close" id="checkoutModalClose" aria-label="Close modal">✕</button>
+            <div class="modal-header">
+                <h3>Complete Order &amp; Confirm Booking</h3>
+                <p>Verify your print job files and shipping details below.</p>
+            </div>
+
+            <div class="checkout-summary-box" id="checkoutSummaryBox">
+                <!-- Populated dynamically via JS -->
+            </div>
+
+            <form id="checkoutForm">
+                <div class="form-group">
+                    <label for="custName">Full Name</label>
+                    <input type="text" id="custName" class="form-input" placeholder="e.g. Rahul Sharma" required>
+                </div>
+                <div class="form-group">
+                    <label for="custPhone">WhatsApp / Phone Number</label>
+                    <input type="tel" id="custPhone" class="form-input" placeholder="+91 98765 43210" required>
+                </div>
+                <div class="form-group">
+                    <label for="custAddress">Shipping Address</label>
+                    <textarea id="custAddress" class="form-input" rows="2" placeholder="Full delivery address with pincode" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="custPayment">Payment Method</label>
+                    <select id="custPayment" class="form-input">
+                        <option value="UPI / GPay / PhonePe">UPI Instant Booking (GPay / PhonePe / Paytm)</option>
+                        <option value="Bank Transfer">Direct Bank Transfer</option>
+                        <option value="Pay on Delivery">Cash / Pay on Delivery</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn--primary btn--full" id="confirmOrderBtn" aria-label="Confirm and Book Print Order" style="margin-top: 1rem;">
+                    Confirm &amp; Book Print Order
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- ======================== PHONE OTP AUTH MODAL ======================== -->
+    <div class="modal-overlay" id="authModalOverlay">
+        <div class="modal-container modal-container--sm" data-lenis-prevent>
+            <button class="modal-close" id="authModalClose" aria-label="Close authentication modal">✕</button>
+            
+            <!-- Stage 1: Enter Phone Number -->
+            <div id="authPhoneStep">
+                <div class="modal-header text-center">
+                    <div class="auth-icon-badge">📱</div>
+                    <h3>Customer Sign In</h3>
+                    <p>Enter your 10-digit mobile number to sign in via OTP for order tracking &amp; feedback.</p>
+                </div>
+                <form id="authPhoneForm">
+                    <div class="form-group">
+                        <label for="authPhoneInput">Mobile Phone Number</label>
+                        <div class="phone-input-wrapper">
+                            <span class="phone-prefix">🇮🇳 +91</span>
+                            <input type="tel" id="authPhoneInput" class="form-input" placeholder="98765 43210" pattern="[0-9]{10}" maxlength="10" required autocomplete="tel">
+                        </div>
+                        <span class="form-hint">A 6-digit verification code will be sent to your phone.</span>
+                    </div>
+                    <button type="submit" class="btn btn--primary btn--full" id="sendOtpBtn">
+                        <span>Send Verification OTP</span>
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                    </button>
+                </form>
+            </div>
+
+            <!-- Stage 2: 6-Digit OTP Verification -->
+            <div id="authOtpStep" style="display: none;">
+                <div class="modal-header text-center">
+                    <div class="auth-icon-badge">🔐</div>
+                    <h3>Enter 6-Digit OTP</h3>
+                    <p>We've generated an instant code for <strong id="displayOtpPhone">+91 98765 43210</strong></p>
+                </div>
+
+                <!-- Instant OTP Code Card -->
+                <div class="otp-preview-card" id="otpPreviewBanner">
+                    <div class="otp-preview-label">📱 Verification Code</div>
+                    <div class="otp-preview-code" id="otpCodeDisplay">------</div>
+                    <button type="button" class="btn btn--outline btn--sm" id="autoFillOtpBtn" aria-label="Auto Fill OTP Code" style="margin-top: 0.5rem; padding: 0.35rem 0.85rem; font-size: 0.76rem;">
+                        ⚡ 1-Click Auto-Fill Code
+                    </button>
+                </div>
+
+                <form id="authOtpForm">
+                    <div class="form-group text-center">
+                        <div class="otp-inputs-grid" id="otpInputsContainer">
+                            <input type="text" maxlength="1" class="otp-digit-box" data-index="0" inputmode="numeric" autocomplete="one-time-code" required>
+                            <input type="text" maxlength="1" class="otp-digit-box" data-index="1" inputmode="numeric" required>
+                            <input type="text" maxlength="1" class="otp-digit-box" data-index="2" inputmode="numeric" required>
+                            <input type="text" maxlength="1" class="otp-digit-box" data-index="3" inputmode="numeric" required>
+                            <input type="text" maxlength="1" class="otp-digit-box" data-index="4" inputmode="numeric" required>
+                            <input type="text" maxlength="1" class="otp-digit-box" data-index="5" inputmode="numeric" required>
+                        </div>
+                    </div>
+                    <div class="otp-actions-row">
+                        <button type="button" class="btn-text" id="changePhoneBtn">← Change Phone</button>
+                        <button type="button" class="btn-text" id="resendOtpBtn" disabled>Resend in <span id="resendTimer">30</span>s</button>
+                    </div>
+                    <button type="submit" class="btn btn--primary btn--full" id="verifyOtpBtn" style="margin-top: 1.25rem;">
+                        <span>Verify &amp; Sign In</span>
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- ======================== CUSTOMER FEEDBACK MODAL ======================== -->
+    <div class="modal-overlay" id="feedbackModalOverlay">
+        <div class="modal-container modal-container--sm" data-lenis-prevent>
+            <button class="modal-close" id="feedbackModalClose" aria-label="Close feedback modal">✕</button>
+            <div class="modal-header">
+                <div class="auth-icon-badge">⭐</div>
+                <h3>Customer Feedback</h3>
+                <p>Help us perfect our 3D prints, slicing precision, and material finish.</p>
+            </div>
+            
+            <form id="feedbackForm">
+                <!-- Verified User Info -->
+                <div class="feedback-user-info">
+                    <span>Verified Customer:</span>
+                    <strong id="feedbackUserPhone">+91 98765 43210</strong>
+                </div>
+
+                <!-- Star Rating -->
+                <div class="form-group text-center">
+                    <label style="display:block; margin-bottom:0.5rem; font-weight:600;">Overall Print Quality &amp; Service</label>
+                    <div class="star-rating" id="feedbackStarRating">
+                        <button type="button" class="star-btn active" data-rating="1" aria-label="1 star">★</button>
+                        <button type="button" class="star-btn active" data-rating="2" aria-label="2 stars">★</button>
+                        <button type="button" class="star-btn active" data-rating="3" aria-label="3 stars">★</button>
+                        <button type="button" class="star-btn active" data-rating="4" aria-label="4 stars">★</button>
+                        <button type="button" class="star-btn active" data-rating="5" aria-label="5 stars">★</button>
+                    </div>
+                    <span class="rating-label" id="ratingText">5.0 — Exceptional Quality</span>
+                </div>
+
+                <!-- Feedback Category -->
+                <div class="form-group">
+                    <label for="feedbackCategory">Feedback Category</label>
+                    <select id="feedbackCategory" class="form-input">
+                        <option value="Print Quality & Dimensional Precision">Print Quality &amp; Precision</option>
+                        <option value="Custom 3D Slicing & Studio Configurator">Custom 3D Slicing &amp; Studio Configurator</option>
+                        <option value="Filament Colors & Aesthetic Finish">Filament Colors &amp; Aesthetic Finish</option>
+                        <option value="Delivery Speed & Packaging">Delivery Speed &amp; Packaging</option>
+                        <option value="General Suggestion">General Suggestion</option>
+                    </select>
+                </div>
+
+                <!-- Comments -->
+                <div class="form-group">
+                    <label for="feedbackComments">Detailed Feedback</label>
+                    <textarea id="feedbackComments" class="form-input" rows="3" placeholder="Tell us about the layer finish, structural integrity, dimensional accuracy, or suggestions..." required></textarea>
+                </div>
+
+                <button type="submit" class="btn btn--primary btn--full" id="submitFeedbackBtn">
+                    <span>Submit Feedback</span>
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- ======================== HERO SECTION ======================== -->
+    <section class="hero" id="hero">
+        <canvas class="hero__canvas" id="heroCanvas"></canvas>
+        <div class="hero__grid-bg"></div>
+        <div class="hero__container container">
+            <div class="hero__content">
+                <div class="hero__badge reveal">
+                    ACCEPTING CUSTOM CAD &amp; STL ORDERS
+                </div>
+                <h1 class="hero__title reveal">
+                    Precision Additive Manufacturing.
+                </h1>
+                <p class="hero__subtitle reveal">
+                    Custom 3D printing and sacred artisanal idols printed in premium matte, silk metallic, and composite PLA.
+                </p>
+                <div class="hero__actions reveal">
+                    <a href="collection.html" class="btn btn--primary btn--lg">
+                        <span>Shop Collection</span>
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                    </a>
+                    <a href="#contact" class="btn btn--outline btn--lg">Get Custom Quote</a>
+                </div>
+                <div class="hero__stats reveal">
+                    <div class="hero__stat">
+                        <div class="hero__stat-value"><span class="hero__stat-number" data-count="500">0</span><span>+</span></div>
+                        <span class="hero__stat-label">Prints Delivered</span>
+                    </div>
+                    <div class="hero__stat">
+                        <div class="hero__stat-value"><span class="hero__stat-number" data-count="50">0</span><span>μm</span></div>
+                        <span class="hero__stat-label">Layer Precision</span>
+                    </div>
+                    <div class="hero__stat">
+                        <div class="hero__stat-value"><span class="hero__stat-number" data-count="100">0</span><span>%</span></div>
+                        <span class="hero__stat-label">Organic PLA</span>
+                    </div>
+                </div>
+            </div>
+            <div class="hero__visual reveal">
+                <div class="hero__image-frame">
+                    <img src="images/hero_banner.jpg" alt="Premium Ganesha 3D printed idol in silk bronze PLA by Shupra 3D" class="hero__image">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ======================== MARQUEE STRIP ======================== -->
+    <div class="marquee-strip">
+        <div class="marquee-strip__track" id="marqueeTrack">
+            <span>MATTE CLAY PLA</span><span class="mx">·</span>
+            <span>SILK METALLIC PLA</span><span class="mx">·</span>
+            <span>STONE COMPOSITE PLA</span><span class="mx">·</span>
+            <span>WOOD COMPOSITE PLA</span><span class="mx">·</span>
+            <span>FREE SHIPPING OVER ₹2999</span><span class="mx">·</span>
+            <span>HANDCRAFTED IN INDIA</span><span class="mx">·</span>
+            <span>50μm LAYER PRECISION</span><span class="mx">·</span>
+            <span>500+ HAPPY CUSTOMERS</span><span class="mx">·</span>
+            <span>MATTE CLAY PLA</span><span class="mx">·</span>
+            <span>SILK METALLIC PLA</span><span class="mx">·</span>
+            <span>STONE COMPOSITE PLA</span><span class="mx">·</span>
+            <span>WOOD COMPOSITE PLA</span><span class="mx">·</span>
+            <span>FREE SHIPPING OVER ₹2999</span><span class="mx">·</span>
+            <span>HANDCRAFTED IN INDIA</span><span class="mx">·</span>
+            <span>50μm LAYER PRECISION</span><span class="mx">·</span>
+            <span>500+ HAPPY CUSTOMERS</span><span class="mx">·</span>
+        </div>
+    </div>
+
+    <!-- ======================== SERVICES SECTION ======================== -->
+    <section class="services" id="services">
+        <div class="container">
+            <div class="section-header reveal">
+                <span class="section-tag">Our Expertise</span>
+                <h2 class="section-title">Three Dimensions of Excellence</h2>
+                <p class="section-subtitle">From concept to creation, we bring your vision to life with precision engineering and artisanal craftsmanship.</p>
+            </div>
+            <div class="services__grid">
+                <div class="service-card reveal" style="--card-delay: 0ms">
+                    <div class="service-card__number">01</div>
+                    <div class="service-card__icon">
+                        <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
+                            <path d="M18 3L33 12V24L18 33L3 24V12L18 3Z" stroke="#E8E8E8" stroke-width="1.5"/>
+                            <path d="M18 3V33" stroke="#E8E8E8" stroke-width="1" opacity="0.4"/>
+                            <path d="M3 12L18 21L33 12" stroke="#E8E8E8" stroke-width="1" opacity="0.4"/>
+                            <circle cx="18" cy="18" r="4" fill="#E8E8E8" opacity="0.2"/>
+                        </svg>
+                    </div>
+                    <h3 class="service-card__title">Custom 3D Printing</h3>
+                    <p class="service-card__desc">Upload your STL, OBJ, or 3MF files and get precision-engineered prints in premium PLA. We handle everything from prototypes to production runs.</p>
+                    <a href="#contact" class="service-card__link">
+                        <span>Start Custom Order</span>
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                    </a>
+                </div>
+                <div class="service-card reveal" style="--card-delay: 100ms">
+                    <div class="service-card__number">02</div>
+                    <div class="service-card__icon">
+                        <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
+                            <rect x="4" y="4" width="12" height="12" rx="2" stroke="#E8E8E8" stroke-width="1.5"/>
+                            <rect x="20" y="4" width="12" height="12" rx="2" stroke="#E8E8E8" stroke-width="1.5"/>
+                            <rect x="4" y="20" width="12" height="12" rx="2" stroke="#E8E8E8" stroke-width="1.5"/>
+                            <rect x="20" y="20" width="12" height="12" rx="2" stroke="#E8E8E8" stroke-width="1.5"/>
+                        </svg>
+                    </div>
+                    <h3 class="service-card__title">Ready-Made Collection</h3>
+                    <p class="service-card__desc">Explore our curated gallery of stunning 3D printed art, architectural models, fantasy figurines, and designer home décor. Each piece is crafted with high-definition PLA precision.</p>
+                    <a href="collection.html" class="service-card__link">
+                        <span>Browse Collection</span>
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                    </a>
+                </div>
+                <div class="service-card reveal" style="--card-delay: 200ms">
+                    <div class="service-card__number">03</div>
+                    <div class="service-card__icon">
+                        <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
+                            <path d="M18 4C18 4 24 10 24 16C24 20 21 22 18 24C15 22 12 20 12 16C12 10 18 4 18 4Z" stroke="#E8E8E8" stroke-width="1.5" fill="rgba(255,255,255,0.05)"/>
+                            <path d="M10 28C10 28 14 24 18 24C22 24 26 28 26 28" stroke="#E8E8E8" stroke-width="1.5"/>
+                            <path d="M8 32H28" stroke="#E8E8E8" stroke-width="1.5"/>
+                            <circle cx="18" cy="14" r="2.5" fill="#E8E8E8" opacity="0.3"/>
+                        </svg>
+                    </div>
+                    <h3 class="service-card__title">Sacred Divine Idols</h3>
+                    <p class="service-card__desc">Exquisitely detailed 3D printed deities — Lord Ganesha, Nataraja, Buddha, and more. Each idol features premium matte clay or silk finishes, hand-sanded surfaces, and biodegradable PLA bioplastics.</p>
+                    <a href="collection.html" class="service-card__link">
+                        <span>View Sacred Collection</span>
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ======================== STATS STRIP ======================== -->
+    <div class="stats-strip">
+        <div class="stats-strip__container container">
+            <div class="stats-strip__item">
+                <div class="stats-strip__value">
+                    <span class="stats-strip__number" data-count="500">0</span><span class="stats-strip__unit">+</span>
+                </div>
+                <span class="stats-strip__label">Orders Fulfilled</span>
+            </div>
+            <div class="stats-strip__divider"></div>
+            <div class="stats-strip__item">
+                <div class="stats-strip__value">
+                    <span class="stats-strip__number" data-count="4">0</span><span class="stats-strip__unit">.9★</span>
+                </div>
+                <span class="stats-strip__label">Average Rating</span>
+            </div>
+            <div class="stats-strip__divider"></div>
+            <div class="stats-strip__item">
+                <div class="stats-strip__value">
+                    <span class="stats-strip__number" data-count="50">0</span><span class="stats-strip__unit">μm</span>
+                </div>
+                <span class="stats-strip__label">Layer Precision</span>
+            </div>
+            <div class="stats-strip__divider"></div>
+            <div class="stats-strip__item">
+                <div class="stats-strip__value">
+                    <span class="stats-strip__number" data-count="28">0</span><span class="stats-strip__unit">+</span>
+                </div>
+                <span class="stats-strip__label">Cities Served</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- ======================== GALLERY / GENRES SECTION ======================== -->
+    <section class="gallery" id="gallery">
+        <div class="container">
+            <div class="section-header reveal">
+                <span class="section-tag">Print Specializations</span>
+                <h2 class="section-title">Our Print Genres</h2>
+                <p class="section-subtitle">Explore our core manufacturing disciplines across sacred art, gaming collectibles, action figures, and bespoke custom gifts.</p>
+            </div>
+            <div class="gallery__grid" id="galleryGrid" style="grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));">
+
+                <!-- Genre 1: Sacred Art & Deities -->
+                <div class="gallery__card reveal">
+                    <div class="gallery__card-image">
+                        <img src="images/ganesha-idol.jpg" alt="Sacred Art & Deities 3D prints" loading="lazy">
+                        <div class="gallery__card-hover-actions">
+                            <a href="collection.html?filter=idols" class="btn btn--primary btn--sm">
+                                View Collection
+                            </a>
+                        </div>
+                    </div>
+                    <div class="gallery__card-body">
+                        <div class="gallery__card-top">
+                            <span class="gallery__card-category">01 · Sacred Art</span>
+                        </div>
+                        <h3 class="gallery__card-title">Sacred Art &amp; Deities</h3>
+                        <p style="font-size: 0.85rem; color: var(--text-secondary); line-height: 1.55; margin-top: 0.35rem;">
+                            Intricately sculpted idols &amp; temple sculptures printed in organic matte clay, silk bronze, and stone PLA.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Genre 2: Gaming Collectibles & Miniatures -->
+                <div class="gallery__card reveal">
+                    <div class="gallery__card-image">
+                        <img src="images/dragon-figurine.jpg" alt="Gaming Collectibles & Miniatures" loading="lazy">
+                        <div class="gallery__card-hover-actions">
+                            <a href="collection.html?filter=readymade" class="btn btn--primary btn--sm">
+                                View Collection
+                            </a>
+                        </div>
+                    </div>
+                    <div class="gallery__card-body">
+                        <div class="gallery__card-top">
+                            <span class="gallery__card-category">02 · Gaming &amp; Tabletop</span>
+                        </div>
+                        <h3 class="gallery__card-title">Gaming Collectibles &amp; Miniatures</h3>
+                        <p style="font-size: 0.85rem; color: var(--text-secondary); line-height: 1.55; margin-top: 0.35rem;">
+                            High-density tabletop figurines, fantasy dragons, boss statues &amp; custom gaming accessories.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Genre 3: High-Detail Action Figures -->
+                <div class="gallery__card reveal">
+                    <div class="gallery__card-image">
+                        <img src="images/custom-print.jpg" alt="High-Detail Action Figures" loading="lazy">
+                        <div class="gallery__card-hover-actions">
+                            <a href="collection.html?filter=readymade" class="btn btn--primary btn--sm">
+                                View Collection
+                            </a>
+                        </div>
+                    </div>
+                    <div class="gallery__card-body">
+                        <div class="gallery__card-top">
+                            <span class="gallery__card-category">03 · Statues &amp; Figures</span>
+                        </div>
+                        <h3 class="gallery__card-title">High-Detail Action Figures</h3>
+                        <p style="font-size: 0.85rem; color: var(--text-secondary); line-height: 1.55; margin-top: 0.35rem;">
+                            Precision-engineered action figures, anime sculptures &amp; display-grade pop-culture models.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Genre 4: Bespoke Personal Gifts -->
+                <div class="gallery__card reveal">
+                    <div class="gallery__card-image">
+                        <img src="images/geometric-vase.jpg" alt="Bespoke Personal Gifts" loading="lazy">
+                        <div class="gallery__card-hover-actions">
+                            <a href="collection.html?filter=custom" class="btn btn--primary btn--sm">
+                                View Collection
+                            </a>
+                        </div>
+                    </div>
+                    <div class="gallery__card-body">
+                        <div class="gallery__card-top">
+                            <span class="gallery__card-category">04 · Custom Gifts</span>
+                        </div>
+                        <h3 class="gallery__card-title">Bespoke Personal Gifting</h3>
+                        <p style="font-size: 0.85rem; color: var(--text-secondary); line-height: 1.55; margin-top: 0.35rem;">
+                            Personalized lithophanes, custom decor, 3D portraits, architectural models &amp; corporate keepsakes.
+                        </p>
+                    </div>
+                </div>
+
+            </div>
+            <div class="gallery__cta reveal" style="margin-top: 3rem;">
+                <a href="collection.html" class="btn btn--outline btn--lg">Explore Full Catalog &amp; Pricing →</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- ======================== CRAFTSMANSHIP SECTION ======================== -->
+    <section class="craft" id="craft">
+        <div class="container">
+            <div class="craft__container">
+                <div class="craft__content reveal">
+                    <span class="section-tag">Our Promise</span>
+                    <h2 class="section-title">Uncompromising Craftsmanship</h2>
+                    <p class="craft__desc">Every piece that leaves our studio undergoes meticulous quality control. We blend cutting-edge 3D printing technology with traditional artisanal finishing techniques to deliver museum-quality results.</p>
+                    <ul class="craft__features">
+                        <li class="craft__feature-item">
+                            <div class="craft__feature-icon-wrap">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#E8E8E8" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M8 12l3 3 5-5"/></svg>
+                            </div>
+                            <div>
+                                <strong>50μm Layer Precision</strong>
+                                <p>Ultra-fine layer resolution for breathtaking detail capture on custom PLA sculptures and figurines.</p>
+                            </div>
+                        </li>
+                        <li class="craft__feature-item">
+                            <div class="craft__feature-icon-wrap">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#E8E8E8" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M8 12l3 3 5-5"/></svg>
+                            </div>
+                            <div>
+                                <strong>Hand-Sanded Finish</strong>
+                                <p>Each custom piece receives painstaking hand-sanded refinement to remove lines and produce an organic clay look.</p>
+                            </div>
+                        </li>
+                        <li class="craft__feature-item">
+                            <div class="craft__feature-icon-wrap">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#E8E8E8" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M8 12l3 3 5-5"/></svg>
+                            </div>
+                            <div>
+                                <strong>Eco-Friendly Materials</strong>
+                                <p>Non-toxic, water-resistant, and UV-stable coatings ensure lasting beauty for home altars and mantles.</p>
+                            </div>
+                        </li>
+                        <li class="craft__feature-item">
+                            <div class="craft__feature-icon-wrap">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#E8E8E8" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M8 12l3 3 5-5"/></svg>
+                            </div>
+                            <div>
+                                <strong>Custom Dimensions</strong>
+                                <p>Specify exact sizes to perfectly fit your home mandir, office desk, or display cabinet.</p>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                <div class="craft__visual reveal">
+                    <div class="craft__image-wrapper">
+                        <img src="images/hero_banner.jpg" alt="Detailed view of handcrafted 3D printed Ganesha idol" loading="lazy">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ======================== MATERIALS (BENTO GRID) SECTION ======================== -->
+    <section class="materials" id="materials">
+        <div class="container">
+            <div class="section-header reveal">
+                <span class="section-tag">Material &amp; Spec</span>
+                <h2 class="section-title">The PLA Medium</h2>
+                <p class="section-subtitle">We print exclusively in premium PLA (Polylactic Acid) bioplastics, offering custom matte, silk, and organic composite finishes.</p>
+            </div>
+            <div class="bento-grid">
+                <!-- Card 1: Large (PLA Core) -->
+                <div class="bento-card bento-card--large reveal" style="--card-delay: 0ms">
+                    <div class="bento-card__icon">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+                    </div>
+                    <div class="bento-card__content">
+                        <span class="bento-card__tag">Core Polymer</span>
+                        <h3 class="bento-card__title">Sustainable PLA Bioplastic</h3>
+                        <p class="bento-card__desc">Derived from 100% renewable resources like cornstarch and sugarcane. It is biodegradable, non-toxic, and emits zero harmful fumes, making it the perfect choice for home-safe sacred art and prototyping.</p>
+                    </div>
+                </div>
+
+                <!-- Card 2: Medium (Matte PLA) -->
+                <div class="bento-card bento-card--medium reveal" style="--card-delay: 100ms">
+                    <div class="bento-card__icon">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="8"/><path d="M12 2v20"/></svg>
+                    </div>
+                    <div class="bento-card__content">
+                        <span class="bento-card__tag">Finish 01</span>
+                        <h3 class="bento-card__title">Matte Clay Texture</h3>
+                        <p class="bento-card__desc">Diffuses light softly across coordinates, hiding layer lines and highlighting micro-details on sculptures.</p>
+                    </div>
+                </div>
+
+                <!-- Card 3: Medium (Silk PLA) -->
+                <div class="bento-card bento-card--medium reveal" style="--card-delay: 200ms">
+                    <div class="bento-card__icon">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                    </div>
+                    <div class="bento-card__content">
+                        <span class="bento-card__tag">Finish 02</span>
+                        <h3 class="bento-card__title">Silk Metallic Luster</h3>
+                        <p class="bento-card__desc">Polished silk polymer additions create a reflective metallic look resembling cast brass and bronze.</p>
+                    </div>
+                </div>
+
+                <!-- Card 4: Large (Composites) -->
+                <div class="bento-card bento-card--large reveal" style="--card-delay: 300ms">
+                    <div class="bento-card__icon">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v19M5 12h14"/></svg>
+                    </div>
+                    <div class="bento-card__content">
+                        <span class="bento-card__tag">Finish 03</span>
+                        <h3 class="bento-card__title">Mineral &amp; Wood Composites</h3>
+                        <p class="bento-card__desc">PLA filaments blended with real dust particles (stone gypsum, pine, copper). The finished objects can be sanded, stained, and possess the physical weight and cool-touch of real raw materials.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ======================== PROCESS SECTION ======================== -->
+    <section class="process" id="process">
+        <div class="container">
+            <div class="section-header reveal">
+                <span class="section-tag">How It Works</span>
+                <h2 class="section-title">From Concept to Creation</h2>
+                <p class="section-subtitle">A seamless four-step journey to bring your vision into the physical world.</p>
+            </div>
+            <div class="process__steps">
+                <div class="process-step reveal">
+                    <div class="process-step__connector"></div>
+                    <div class="process-step__number">01</div>
+                    <div class="process-step__icon">
+                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#E8E8E8" stroke-width="1.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                    </div>
+                    <h3 class="process-step__title">Design or Choose</h3>
+                    <p class="process-step__desc">Upload your 3D file (STL, OBJ, 3MF) or browse our curated collection of ready-made designs and sacred idols.</p>
+                </div>
+                <div class="process-step reveal">
+                    <div class="process-step__connector"></div>
+                    <div class="process-step__number">02</div>
+                    <div class="process-step__icon">
+                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#E8E8E8" stroke-width="1.5"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93l-1.41 1.41M5.34 5.34L3.93 3.93M4.93 19.07l1.41-1.41M18.66 18.66l1.41 1.41M2 12h2M20 12h2M12 2v2M12 20v2"/></svg>
+                    </div>
+                    <h3 class="process-step__title">Customize</h3>
+                    <p class="process-step__desc">Select your preferred material, finish, color, and dimensions. Get an instant price estimate with our smart configurator.</p>
+                </div>
+                <div class="process-step reveal">
+                    <div class="process-step__connector"></div>
+                    <div class="process-step__number">03</div>
+                    <div class="process-step__icon">
+                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#E8E8E8" stroke-width="1.5"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+                    </div>
+                    <h3 class="process-step__title">We Craft It</h3>
+                    <p class="process-step__desc">Our expert team prints, sands, finishes, and quality-checks every piece. Sacred idols receive hand-sanded PLA finishes.</p>
+                </div>
+                <div class="process-step reveal">
+                    <div class="process-step__number">04</div>
+                    <div class="process-step__icon">
+                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#E8E8E8" stroke-width="1.5"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+                    </div>
+                    <h3 class="process-step__title">Delivered to You</h3>
+                    <p class="process-step__desc">Carefully packaged in premium protective boxing and delivered safely to your doorstep with tracking and insurance.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ======================== TESTIMONIALS SECTION ======================== -->
+    <section class="testimonials" id="testimonials">
+        <div class="container">
+            <div class="section-header reveal">
+                <span class="section-tag">What Clients Say</span>
+                <h2 class="section-title">Client Experiences</h2>
+                <p class="section-subtitle">Our customers share their experience with Shupra 3D's premium products and services.</p>
+            </div>
+            <div class="testimonials__carousel" id="testimonialsCarousel">
+                <div class="testimonials__track" id="testimonialsTrack">
+                    <div class="testimonial-card">
+                        <div class="testimonial-card__stars">★★★★★</div>
+                        <p class="testimonial-card__text">The Ganesha idol I ordered for our home mandir is absolutely breathtaking. The silk metallic detail is incredible — it looks far more expensive than it is. My family was amazed.</p>
+                        <div class="testimonial-card__author">
+                            <div class="testimonial-card__avatar">RP</div>
+                            <div class="testimonial-card__info">
+                                <strong class="testimonial-card__name">Rajesh Patel</strong>
+                                <span class="testimonial-card__role">Homeowner, Mumbai</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="testimonial-card">
+                        <div class="testimonial-card__stars">★★★★★</div>
+                        <p class="testimonial-card__text">We've been using Shupra 3D for our architectural models for over a year now. The precision is unmatched — every detail comes through perfectly. They've become our go-to partner.</p>
+                        <div class="testimonial-card__author">
+                            <div class="testimonial-card__avatar">AS</div>
+                            <div class="testimonial-card__info">
+                                <strong class="testimonial-card__name">Ananya Sharma</strong>
+                                <span class="testimonial-card__role">Architect, Bengaluru</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="testimonial-card">
+                        <div class="testimonial-card__stars">★★★★★</div>
+                        <p class="testimonial-card__text">I ordered a custom dragon figurine as a gift and the quality absolutely blew us away. The hand-painted details are museum quality. Already planning my next order!</p>
+                        <div class="testimonial-card__author">
+                            <div class="testimonial-card__avatar">VK</div>
+                            <div class="testimonial-card__info">
+                                <strong class="testimonial-card__name">Vikram Kumar</strong>
+                                <span class="testimonial-card__role">Collector, Delhi</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="testimonial-card">
+                        <div class="testimonial-card__stars">★★★★★</div>
+                        <p class="testimonial-card__text">Ordered the Nataraja for my office. The bronze patina finish is stunning and the packaging was impeccable. Shupra 3D truly understands luxury and craftsmanship.</p>
+                        <div class="testimonial-card__author">
+                            <div class="testimonial-card__avatar">PM</div>
+                            <div class="testimonial-card__info">
+                                <strong class="testimonial-card__name">Priya Menon</strong>
+                                <span class="testimonial-card__role">CEO, Hyderabad</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonials__controls">
+                    <button class="testimonials__btn" id="prevTestimonial" aria-label="Previous testimonial">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
+                    </button>
+                    <div class="testimonials__dots" id="testimonialsDots"></div>
+                    <button class="testimonials__btn" id="nextTestimonial" aria-label="Next testimonial">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ======================== 3D STUDIO CONFIGURATOR ======================== -->
+    <section class="configurator-section" id="contact">
+        <div class="container">
+            <div class="section-header reveal">
+                <span class="section-tag">Instant Studio</span>
+                <h2 class="section-title">Bespoke 3D Fabrication Studio</h2>
+                <p class="section-subtitle">Upload your STL file to parse geometry, inspect design rules, and calculate instant production pricing locally.</p>
+            </div>
+            
+            <div class="configurator reveal">
+                <!-- Left Side: WebGL Viewport & Upload Overlay -->
+                <div class="configurator__viewport-container" data-lenis-prevent>
+                    <!-- Dropzone Overlay -->
+                    <div class="configurator__dropzone" id="configDropzone">
+                        <div class="configurator__dropzone-icon">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                        </div>
+                        <div class="configurator__dropzone-title">Upload your 3D CAD / Slicer File</div>
+                        <div class="configurator__dropzone-subtitle">Drag &amp; Drop or click to upload STL or 3MF file</div>
+                        <input type="file" id="configFileInput" accept=".stl,.3mf" style="display:none">
+                    </div>
+                    <!-- Three.js Canvas -->
+                    <div id="threeViewport" style="width:100%; height:100%;"></div>
+                </div>
+
+                <!-- Right Side: Configurator Controls -->
+                <div class="configurator__options" data-lenis-prevent>
+                    <!-- Model Geometry Info (Empty initially, populated via STL parsing) -->
+                    <div class="configurator__group">
+                        <span class="configurator__group-title">Geometry &amp; Print Parameters</span>
+                        <div class="configurator__specs">
+                            <div class="configurator__spec-item">
+                                <span class="configurator__spec-label">Dimensions</span>
+                                <span class="configurator__spec-value" id="specDimensions">—</span>
+                            </div>
+                            <div class="configurator__spec-item">
+                                <span class="configurator__spec-label">Volume</span>
+                                <span class="configurator__spec-value" id="specVolume">—</span>
+                            </div>
+                            <div class="configurator__spec-item">
+                                <span class="configurator__spec-label">Surface Area</span>
+                                <span class="configurator__spec-value" id="specSurfaceArea">—</span>
+                            </div>
+                            <div class="configurator__spec-item">
+                                <span class="configurator__spec-label">Triangle Count</span>
+                                <span class="configurator__spec-value" id="specTriangles">—</span>
+                            </div>
+                            <div class="configurator__spec-item">
+                                <span class="configurator__spec-label">Est. Filament Weight</span>
+                                <span class="configurator__spec-value" id="specWeight" style="color:#10B981; font-weight:600;">—</span>
+                            </div>
+                            <div class="configurator__spec-item">
+                                <span class="configurator__spec-label">Est. Print Duration</span>
+                                <span class="configurator__spec-value" id="specPrintTime" style="color:#3B82F6; font-weight:600;">—</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 3MF Slicer & Multi-Color Inventory Match Panel (Visible when 3MF file is uploaded) -->
+                    <div class="configurator__group" id="threemfConfigPanel" style="display: none;">
+                        <div class="configurator__3mf-header">
+                            <span class="configurator__group-title" style="margin-bottom:0;">3MF Project Slicer Profile</span>
+                            <span class="configurator__3mf-badge">⚙️ Locked from 3MF</span>
+                        </div>
+                        <p class="configurator__3mf-notice">
+                            Colors &amp; internal slicer parameters are locked directly from your pre-configured 3MF project file.
+                        </p>
+
+                        <!-- Slicer Profile Specs -->
+                        <div class="configurator__3mf-specs">
+                            <div class="configurator__3mf-spec-item">
+                                <span class="configurator__spec-label">Slicer Infill</span>
+                                <span class="configurator__spec-value" id="threemfInfill">20% Gyroid</span>
+                            </div>
+                            <div class="configurator__3mf-spec-item">
+                                <span class="configurator__spec-label">Layer Height</span>
+                                <span class="configurator__spec-value" id="threemfLayerHeight">0.20 mm</span>
+                            </div>
+                        </div>
+
+                        <!-- Extracted Colors & Stock Verification -->
+                        <div style="margin-top: 1rem;">
+                            <span class="configurator__group-title" style="font-size:0.75rem; color:var(--text-muted); margin-bottom:0.5rem; display:block;">Embedded Colors &amp; Inventory Status</span>
+                            <div class="configurator__3mf-color-list" id="threemfColorList">
+                                <!-- Populated dynamically by JS -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- STL Mode Container (Hidden in 3MF mode) -->
+                    <div id="stlOptionsContainer">
+                        <!-- PLA Filament Type selection -->
+                        <div class="configurator__group" id="materialGroupContainer">
+                            <span class="configurator__group-title">PLA Filament Type</span>
+                            <div class="configurator__radio-group configurator__radio-group--scroll" id="materialGroup">
+                                <div class="configurator__radio-card active" data-value="pla-basic">
+                                    <span class="configurator__radio-name">PLA Basic</span>
+                                    <span class="configurator__radio-desc">Matte Finish (Base)</span>
+                                </div>
+                                <div class="configurator__radio-card" data-value="pla-wood">
+                                    <span class="configurator__radio-name">PLA Wood</span>
+                                    <span class="configurator__radio-desc">Wood Blend (+12%)</span>
+                                </div>
+                                <div class="configurator__radio-card" data-value="pla-sparkle">
+                                    <span class="configurator__radio-name">PLA Sparkle</span>
+                                    <span class="configurator__radio-desc">Glitter Dust (+25%)</span>
+                                </div>
+                                <div class="configurator__radio-card" data-value="pla-silk">
+                                    <span class="configurator__radio-name">PLA Silk</span>
+                                    <span class="configurator__radio-desc">Metallic Luster (+38%)</span>
+                                </div>
+                                <div class="configurator__radio-card" data-value="pla-marble">
+                                    <span class="configurator__radio-name">PLA Marble</span>
+                                    <span class="configurator__radio-desc">Stone Texture (+50%)</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Filament Color Swatch selection -->
+                        <div class="configurator__group" id="colorGroupContainer">
+                            <span class="configurator__group-title">Available Filament Color</span>
+                            <div class="configurator__color-swatches" id="colorSwatchesGroup">
+                                <!-- Populated dynamically via JS per Filament Type -->
+                            </div>
+                        </div>
+
+                        <!-- Infill presets -->
+                        <div class="configurator__group" id="infillGroupContainer">
+                            <span class="configurator__group-title">Internal Infill Density</span>
+                            <div class="configurator__radio-group" id="infillGroup">
+                                <div class="configurator__radio-card" data-value="hollow">
+                                    <span class="configurator__radio-name">Hollow (Light)</span>
+                                    <span class="configurator__radio-desc">Aesthetic shell</span>
+                                </div>
+                                <div class="configurator__radio-card active" data-value="standard">
+                                    <span class="configurator__radio-name">Standard</span>
+                                    <span class="configurator__radio-desc">20% Grid Infill</span>
+                                </div>
+                                <div class="configurator__radio-card" data-value="solid">
+                                    <span class="configurator__radio-name">Solid (Heavy)</span>
+                                    <span class="configurator__radio-desc">Artisanal density</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Lead-time selection -->
+                    <div class="configurator__group">
+                        <span class="configurator__group-title">Production Lead-Time</span>
+                        <div class="configurator__radio-group" id="leadTimeGroup">
+                            <div class="configurator__radio-card" data-value="eco">
+                                <span class="configurator__radio-name">Eco batch</span>
+                                <span class="configurator__radio-desc">7 Days (-10%)</span>
+                            </div>
+                            <div class="configurator__radio-card active" data-value="standard">
+                                <span class="configurator__radio-name">Standard Slot</span>
+                                <span class="configurator__radio-desc">3-5 Days (Base)</span>
+                            </div>
+                            <div class="configurator__radio-card" data-value="priority">
+                                <span class="configurator__radio-name">Priority Rush</span>
+                                <span class="configurator__radio-desc">48 Hours (+35%)</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Cost breakdown -->
+                    <div class="configurator__price-breakdown">
+                        <div class="configurator__price-row">
+                            <span>Base Setup &amp; Slicing</span>
+                            <span id="priceSetup">₹0</span>
+                        </div>
+                        <div class="configurator__price-row">
+                            <span>Filament Weight Cost (<span id="priceWeightLabel">0g</span>)</span>
+                            <span id="priceMaterial">₹0</span>
+                        </div>
+                        <div class="configurator__price-row">
+                            <span>Machine Print Time (<span id="priceTimeLabel">0h</span>)</span>
+                            <span id="priceMachineTime">₹0</span>
+                        </div>
+                        <div class="configurator__price-row configurator__price-row--total">
+                            <span>Estimated Total Price</span>
+                            <span id="priceTotal">₹0</span>
+                        </div>
+                    </div>
+
+                    <button class="btn btn--primary btn--lg btn--full" id="configuratorOrderBtn" aria-label="Place Custom Order" disabled>
+                        <span>Place Custom Order</span>
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m5 12 5 5L20 7"/></svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ======================== FOOTER ======================== -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer__top">
+                <div class="footer__brand">
+                    <a href="#" class="nav__logo">
+                        <svg class="nav__logo-icon" width="28" height="28" viewBox="0 0 32 32" fill="none">
+                            <path d="M16 2L28 9V23L16 30L4 23V9L16 2Z" stroke="#E8E8E8" stroke-width="1.5" fill="rgba(255,255,255,0.05)"/>
+                            <path d="M16 2L28 9L16 16L4 9L16 2Z" fill="rgba(255,255,255,0.1)" stroke="#E8E8E8" stroke-width="1"/>
+                        </svg>
+                        Shupra 3D
+                    </a>
+                    <p class="footer__desc">Precision 3D printing and sacred art crafted in high-definition PLA bioplastics.</p>
+                    <div class="footer__social">
+                        <a href="#" class="footer__social-link" aria-label="Instagram">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="5"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor"/></svg>
+                        </a>
+                        <a href="#" class="footer__social-link" aria-label="Twitter / X">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 4l16 16M20 4L4 20"/></svg>
+                        </a>
+                        <a href="#" class="footer__social-link" aria-label="YouTube">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1" y="5" width="22" height="14" rx="3"/><polygon points="10 9 16 12 10 15" fill="currentColor" stroke="none"/></svg>
+                        </a>
+                        <a href="https://wa.me/919876543210" class="footer__social-link" aria-label="WhatsApp" target="_blank">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z"/></svg>
+                        </a>
+                    </div>
+                </div>
+                <div class="footer__links-group">
+                    <div class="footer__column">
+                        <h4 class="footer__title">Services</h4>
+                        <ul class="footer__links">
+                            <li><a href="#services">Custom 3D Printing</a></li>
+                            <li><a href="collection.html">Ready-Made Collection</a></li>
+                            <li><a href="collection.html?filter=idols">Sacred Idols</a></li>
+                            <li><a href="#contact">Bulk Orders</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer__column">
+                        <h4 class="footer__title">Materials</h4>
+                        <ul class="footer__links">
+                            <li><a href="#materials">Matte Clay PLA</a></li>
+                            <li><a href="#materials">Silk Metallic PLA</a></li>
+                            <li><a href="#materials">Stone &amp; Wood PLA</a></li>
+                            <li><a href="#materials">Bespoke Finishes</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer__column">
+                        <h4 class="footer__title">Company</h4>
+                        <ul class="footer__links">
+                            <li><a href="#craft">About Us</a></li>
+                            <li><a href="#process">How It Works</a></li>
+                            <li><a href="#testimonials">Reviews</a></li>
+                            <li><a href="#contact">Contact</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="footer__newsletter">
+                    <h4 class="footer__title">Stay Updated</h4>
+                    <p>Get notified about new collections and special offers.</p>
+                    <form class="footer__newsletter-form" id="newsletterForm" onsubmit="return false;">
+                        <input type="email" placeholder="your@email.com" aria-label="Email for newsletter" required>
+                        <button type="submit" class="btn btn--primary">Subscribe</button>
+                    </form>
+                    <div class="footer__trust">
+                        <span>Secure Payments</span>
+                        <span>·</span>
+                        <span>Eco-Friendly PLA</span>
+                        <span>·</span>
+                        <span>Pan-India Shipping</span>
+                    </div>
+                </div>
+            </div>
+            <div class="footer__bottom">
+                <p>&copy; 2026 Shupra 3D. All rights reserved. Handcrafted in Bengaluru, India.</p>
+                <div class="footer__bottom-links">
+                    <a href="#">Privacy Policy</a>
+                    <a href="#">Terms of Service</a>
+                    <a href="#">Refund Policy</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- ======================== BACK TO TOP ======================== -->
+    <button class="back-to-top" id="backToTop" aria-label="Back to top">
+        <svg class="back-to-top__progress" viewBox="0 0 36 36">
+            <circle class="back-to-top__bg" cx="18" cy="18" r="16"/>
+            <circle class="back-to-top__ring" id="progressRing" cx="18" cy="18" r="16" stroke-dasharray="100.53" stroke-dashoffset="100.53"/>
+        </svg>
+        <svg class="back-to-top__arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+    </button>
+
+    <!-- ======================== MOBILE BOTTOM NAV ======================== -->
+    <nav class="mobile-bottom-nav" id="mobileBottomNav" aria-label="Mobile navigation">
+        <a href="#hero" class="mobile-nav-item active" id="mob-home">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+            <span>Home</span>
+        </a>
+        <a href="collection.html" class="mobile-nav-item" id="mob-shop">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+            <span>Shop</span>
+        </a>
+        <button class="mobile-nav-item mobile-nav-item--cart" id="mob-cart" aria-label="Open Shopping Cart">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+            <span>Cart</span>
+            <span class="nav__badge" id="mobCartBadge" style="display:none">0</span>
+        </button>
+        <button class="mobile-nav-item" id="mob-account" aria-label="Account &amp; Sign In">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            <span id="mobAccountLabel">Sign In</span>
+        </button>
+        <a href="#contact" class="mobile-nav-item" id="mob-contact">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 2.19h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 9.91a16 16 0 0 0 6.1 6.1l.87-.87a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+            <span>Quote</span>
+        </a>
+    </nav>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/STLLoader.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/3MFLoader.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.13/dist/lenis.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
