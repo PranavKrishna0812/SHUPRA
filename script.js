@@ -345,7 +345,7 @@ function initParticleCanvas() {
             if (p.y < 0 || p.y > H) p.vy *= -1;
             ctx.beginPath();
             ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-            ctx.fillStyle = `rgba(255, 255, 255, ${p.alpha * 0.4})`;
+            ctx.fillStyle = (Math.random() > 0.5) ? `rgba(245, 213, 224, ${p.alpha * 0.5})` : `rgba(102, 103, 171, ${p.alpha * 0.5})`;
             ctx.fill();
         });
         requestAnimationFrame(draw);
