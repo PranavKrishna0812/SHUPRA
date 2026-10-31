@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shupra 3D — Admin &amp; Print Queue Portal</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .admin-page {
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            padding-bottom: 4rem;
+        }
+        .admin-header {
+            background: rgba(15, 16, 17, 0.85);
+            backdrop-filter: blur(16px);
+            border-bottom: 1px solid var(--border-subtle);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            padding: 1rem 0;
+        }
+        .admin-header-inner {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+        }
+        .admin-title-area {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        .admin-badge-portal {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid var(--border-subtle);
+            font-family: var(--font-mono);
+            font-size: 0.72rem;
+            padding: 0.25rem 0.6rem;
+            border-radius: var(--r-sm);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        .admin-actions {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        .health-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.45rem;
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+            padding: 0.35rem 0.75rem;
+            border-radius: 9999px;
+            background: rgba(16, 185, 129, 0.1);
+            color: #10B981;
+            border: 1px solid rgba(16, 185, 129, 0.25);
+        }
+        .health-indicator.degraded {
+            background: rgba(245, 158, 11, 0.1);
+            color: #F59E0B;
+            border-color: rgba(245, 158, 11, 0.25);
+        }
+        .health-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: currentColor;
+            animation: pulse-dot 2s infinite;
+        }
+        @keyframes pulse-dot {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.4; transform: scale(0.85); }
+        }
+        .admin-container {
+            max-width: 1400px;
+            margin: 2rem auto;
+            padding: 0 1.5rem;
+        }
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        .kpi-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--r-md);
+            padding: 1.25rem;
+            transition: border-color var(--t-fast);
+        }
+        .kpi-card:hover {
+            border-color: rgba(255, 255, 255, 0.15);
+        }
+        .kpi-label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-muted);
+            font-family: var(--font-mono);
+            margin-bottom: 0.4rem;
+        }
+        .kpi-val {
+            font-size: 1.85rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            line-height: 1.2;
+        }
+        .kpi-sub {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            margin-top: 0.35rem;
+        }
+        .admin-tabs {
+            display: flex;
+            gap: 0.5rem;
+            border-bottom: 1px solid var(--border-subtle);
+            margin-bottom: 1.5rem;
+            overflow-x: auto;
+        }
+        .admin-tab {
+            background: none;
+            border: none;
+            padding: 0.75rem 1.25rem;
+            font-size: 0.88rem;
+            font-weight: 500;
+            color: var(--text-muted);
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            transition: all var(--t-fast);
+            white-space: nowrap;
+        }
+        .admin-tab:hover {
+            color: var(--text-primary);
+        }
+        .admin-tab.active {
+            color: var(--text-primary);
+            border-bottom-color: var(--color-accent);
+            font-weight: 600;
+        }
+        .tab-panel {
+            display: none;
+        }
+        .tab-panel.active {
+            display: block;
+        }
+        .table-toolbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.25rem;
+            flex-wrap: wrap;
+        }
+        .search-group {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+            flex: 1;
+            max-width: 480px;
+        }
+        .data-table-wrapper {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--r-md);
+            overflow-x: auto;
+        }
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.84rem;
+            text-align: left;
+        }
+        .data-table th {
+            background: rgba(255, 255, 255, 0.02);
+            padding: 0.85rem 1rem;
+            font-size: 0.72rem;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            color: var(--text-muted);
+            font-family: var(--font-mono);
+            border-bottom: 1px solid var(--border-subtle);
+            white-space: nowrap;
+        }
+        .data-table td {
+            padding: 0.85rem 1rem;
+            border-bottom: 1px solid var(--border-subtle);
+            color: var(--text-secondary);
+            vertical-align: middle;
+        }
+        .data-table tr:hover td {
+            background: rgba(255, 255, 255, 0.015);
+            color: var(--text-primary);
+        }
+        .status-select {
+            background: var(--bg-primary);
+            border: 1px solid var(--border-subtle);
+            color: var(--text-primary);
+            font-size: 0.75rem;
+            font-family: var(--font-mono);
+            padding: 0.3rem 0.5rem;
+            border-radius: var(--r-sm);
+            cursor: pointer;
+        }
+        .status-select:focus {
+            border-color: var(--color-focus);
+            outline: none;
+        }
+    </style>
+</head>
+<body class="admin-page">
+    <!-- Admin Header -->
+    <header class="admin-header">
+        <div class="admin-header-inner">
+            <div class="admin-title-area">
+                <a href="index.html" class="nav__logo" style="margin-right:0.5rem;">
+                    <svg class="nav__logo-icon" width="24" height="24" viewBox="0 0 32 32" fill="none">
+                        <path d="M16 2L28 9V23L16 30L4 23V9L16 2Z" stroke="#E8E8E8" stroke-width="1.5" fill="rgba(255,255,255,0.05)"/>
+                        <path d="M16 2L28 9L16 16L4 9L16 2Z" fill="rgba(255,255,255,0.1)" stroke="#E8E8E8" stroke-width="1"/>
+                        <path d="M16 16V30" stroke="#E8E8E8" stroke-width="1" opacity="0.4"/>
+                    </svg>
+                    Shupra 3D
+                </a>
+                <span class="admin-badge-portal">Admin &amp; Customer Portal</span>
+            </div>
+
+            <div class="admin-actions">
+                <div class="health-indicator" id="apiHealthBadge" title="Backend Health Status">
+                    <span class="health-dot"></span>
+                    <span id="apiHealthText">System: Checking...</span>
+                </div>
+                <button type="button" class="btn btn--outline btn--sm" id="adminRefreshBtn" style="padding:0.4rem 0.75rem;">
+                    ↻ Refresh Data
+                </button>
+                <a href="index.html" class="btn btn--primary btn--sm" style="padding:0.4rem 0.75rem;">
+                    ← Back to Store
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <main class="admin-container">
+        <!-- Overview KPIs -->
+        <div class="kpi-grid">
+            <div class="kpi-card">
+                <div class="kpi-label">Registered Customers</div>
+                <div class="kpi-val" id="kpiCustomers">0</div>
+                <div class="kpi-sub" id="kpiCustomersSub">Unique verified phone accounts</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-label">Total Print Orders</div>
+                <div class="kpi-val" id="kpiOrders">0</div>
+                <div class="kpi-sub" id="kpiOrdersSub">Active in queue: 0</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-label">Lifetime Revenue</div>
+                <div class="kpi-val" id="kpiRevenue">₹0</div>
+                <div class="kpi-sub">Total sales booked</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-label">Customer Satisfaction</div>
+                <div class="kpi-val" id="kpiRating">5.0 ★</div>
+                <div class="kpi-sub" id="kpiRatingSub">Based on reviews</div>
+            </div>
+        </div>
+
+        <!-- Navigation Tabs -->
+        <div class="admin-tabs">
+            <button class="admin-tab active" data-tab="ordersTab">Orders &amp; Print Queue</button>
+            <button class="admin-tab" data-tab="customersTab">Customer Database &amp; History</button>
+            <button class="admin-tab" data-tab="feedbackTab">Customer Feedback</button>
+            <button class="admin-tab" data-tab="systemTab">Integrations &amp; Health</button>
+        </div>
+
+        <!-- TAB 1: ORDERS & PRINT QUEUE -->
+        <section class="tab-panel active" id="ordersTab">
+            <div class="table-toolbar">
+                <div class="search-group">
+                    <input type="text" id="orderSearch" class="form-input" placeholder="Search by Order # or Customer Phone...">
+                    <select id="orderStatusFilter" class="form-input" style="width: auto;">
+                        <option value="">All Statuses</option>
+                        <option value="ORDER_PLACED">Order Placed</option>
+                        <option value="IN_PRODUCTION">In Production (Printing)</option>
+                        <option value="QUALITY_CHECK">Quality Check</option>
+                        <option value="DISPATCHED">Dispatched / Shipped</option>
+                        <option value="DELIVERED">Delivered</option>
+                    </select>
+                </div>
+                <button class="btn btn--outline btn--sm" id="exportOrdersBtn">
+                    Download CSV
+                </button>
+            </div>
+
+            <div class="data-table-wrapper">
+                <table class="data-table" id="ordersTable">
+                    <thead>
+                        <tr>
+                            <th>Order ID</th>
+                            <th>Date &amp; Time</th>
+                            <th>Customer</th>
+                            <th>Print Items &amp; Files</th>
+                            <th>Amount</th>
+                            <th>Payment</th>
+                            <th>Current Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="ordersTableBody">
+                        <tr>
+                            <td colspan="8" style="text-align:center; padding:2.5rem; color:var(--text-muted);">
+                                Loading orders from database...
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- TAB 2: CUSTOMER DATABASE -->
+        <section class="tab-panel" id="customersTab">
+            <div class="table-toolbar">
+                <div class="search-group">
+                    <input type="text" id="custSearch" class="form-input" placeholder="Search customer by name, phone, or address...">
+                </div>
+                <button class="btn btn--outline btn--sm" id="exportCustomersBtn">
+                    Download Customer CSV
+                </button>
+            </div>
+
+            <div class="data-table-wrapper">
+                <table class="data-table" id="customersTable">
+                    <thead>
+                        <tr>
+                            <th>Customer Phone</th>
+                            <th>Name</th>
+                            <th>Shipping Address</th>
+                            <th>Total Orders</th>
+                            <th>Total Spent</th>
+                            <th>Registered</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="customersTableBody">
+                        <tr>
+                            <td colspan="7" style="text-align:center; padding:2.5rem; color:var(--text-muted);">
+                                Loading customers from database...
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- TAB 3: CUSTOMER FEEDBACK -->
+        <section class="tab-panel" id="feedbackTab">
+            <div class="data-table-wrapper">
+                <table class="data-table" id="feedbackTable">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Customer</th>
+                            <th>Rating</th>
+                            <th>Category</th>
+                            <th>Comments</th>
+                        </tr>
+                    </thead>
+                    <tbody id="feedbackTableBody">
+                        <tr>
+                            <td colspan="5" style="text-align:center; padding:2.5rem; color:var(--text-muted);">
+                                Loading customer reviews...
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- TAB 4: SYSTEM & HEALTH -->
+        <section class="tab-panel" id="systemTab">
+            <div class="kpi-grid">
+                <div class="kpi-card" style="grid-column: span 2;">
+                    <h3 style="font-size:1.1rem; margin-bottom:0.75rem;">Backend &amp; Database Architecture</h3>
+                    <div style="font-size:0.85rem; line-height:1.7; color:var(--text-secondary);">
+                        <div><strong>Active Mode:</strong> <span id="sysDbMode">PostgreSQL or Local Resilience</span></div>
+                        <div><strong>Database Status:</strong> <span id="sysDbStatus">Checking...</span></div>
+                        <div><strong>Server Latency:</strong> <span id="sysLatency">0ms</span></div>
+                        <div><strong>Node.js Engine:</strong> <span id="sysNode">v22.x</span></div>
+                        <div><strong>Server Uptime:</strong> <span id="sysUptime">0 seconds</span></div>
+                    </div>
+                </div>
+                <div class="kpi-card" style="grid-column: span 2;">
+                    <h3 style="font-size:1.1rem; margin-bottom:0.75rem;">Vercel Deployment Verification</h3>
+                    <p style="font-size:0.85rem; color:var(--text-secondary); line-height:1.6; margin-bottom:0.75rem;">
+                        This application is completely structured for 1-click deployment on Vercel. All API routes under <code>/api/*</code> run serverless.
+                    </p>
+                    <div style="background:var(--bg-primary); padding:0.75rem; border-radius:var(--r-sm); border:1px solid var(--border-subtle); font-family:var(--font-mono); font-size:0.75rem;">
+                        <div>POSTGRES_URL=postgres://... (Optional for cloud DB)</div>
+                        <div>PORT=3000 (Defaults to serverless port)</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Customer History Modal (Admin view) -->
+    <div class="modal-overlay" id="adminCustModal">
+        <div class="modal-container modal-container--md">
+            <button class="modal-close" onclick="document.getElementById('adminCustModal').classList.remove('open')">✕</button>
+            <div class="modal-header">
+                <h3 id="adminCustModalTitle">Customer Purchase History</h3>
+                <p id="adminCustModalPhone">+91 ••••• ••••</p>
+            </div>
+            <div class="orders-history-list" id="adminCustOrdersList" style="max-height:400px; overflow-y:auto;">
+                <!-- Populated dynamically -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Admin JS Logic -->
+    <script>
+        let allOrders = [];
+        let allCustomers = [];
+        let allFeedback = [];
+
+        // Tab Switching
+        document.querySelectorAll('.admin-tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                document.querySelectorAll('.admin-tab').forEach(t => t.classList.remove('active'));
+                document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+                tab.classList.add('active');
+                const target = document.getElementById(tab.getAttribute('data-tab'));
+                if (target) target.classList.add('active');
+            });
+        });
+
+        // Fetch System Health
+        async function checkHealth() {
+            try {
+                const res = await fetch('/api/health');
+                const data = await res.json();
+                const badge = document.getElementById('apiHealthBadge');
+                const text = document.getElementById('apiHealthText');
+
+                if (data.status === 'ok') {
+                    badge.className = 'health-indicator';
+                    text.textContent = `Online • ${data.database.mode} (${data.database.latencyMs}ms)`;
+                    document.getElementById('sysDbMode').textContent = data.database.mode;
+                    document.getElementById('sysDbStatus').textContent = data.database.database;
+                    document.getElementById('sysLatency').textContent = `${data.database.latencyMs}ms`;
+                    document.getElementById('sysNode').textContent = data.nodeVersion;
+                    document.getElementById('sysUptime').textContent = `${Math.floor(data.uptime)} seconds`;
+                } else {
+                    badge.className = 'health-indicator degraded';
+                    text.textContent = 'Degraded';
+                }
+            } catch (err) {
+                const badge = document.getElementById('apiHealthBadge');
+                const text = document.getElementById('apiHealthText');
+                badge.className = 'health-indicator degraded';
+                text.textContent = 'Offline / Connecting';
+            }
+        }
+
+        // Fetch Overview & Tab Data
+        async function loadAdminData() {
+            try {
+                const res = await fetch('/api/admin');
+                const data = await res.json();
+
+                allOrders = data.orders || [];
+                allCustomers = data.customers || [];
+                allFeedback = data.feedback || [];
+
+                // Render KPIs
+                if (data.stats) {
+                    document.getElementById('kpiCustomers').textContent = data.stats.totalCustomers || allCustomers.length;
+                    document.getElementById('kpiOrders').textContent = data.stats.totalOrders || allOrders.length;
+                    document.getElementById('kpiOrdersSub').textContent = `Active in queue: ${data.stats.activeOrders || 0}`;
+                    document.getElementById('kpiRevenue').textContent = `₹${(data.stats.totalRevenue || 0).toLocaleString('en-IN')}`;
+                    document.getElementById('kpiRating').textContent = `${data.stats.averageRating || '5.0'} ★`;
+                    document.getElementById('kpiRatingSub').textContent = `Based on ${data.stats.totalFeedback || 0} reviews`;
+                }
+
+                renderOrdersTable();
+                renderCustomersTable();
+                renderFeedbackTable();
+            } catch (err) {
+                console.error('Error loading admin data:', err);
+            }
+        }
+
+        // Render Orders Table
+        function renderOrdersTable() {
+            const tbody = document.getElementById('ordersTableBody');
+            const searchVal = document.getElementById('orderSearch').value.toLowerCase().trim();
+            const statusFilter = document.getElementById('orderStatusFilter').value;
+
+            let filtered = allOrders.filter(o => {
+                const matchSearch = !searchVal || 
+                    o.order_number.toLowerCase().includes(searchVal) ||
+                    (o.customer_phone && o.customer_phone.includes(searchVal)) ||
+                    (o.customer_name && o.customer_name.toLowerCase().includes(searchVal));
+                const matchStatus = !statusFilter || o.order_status === statusFilter;
+                return matchSearch && matchStatus;
+            });
+
+            if (filtered.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="8" style="text-align:center; padding:2rem; color:var(--text-muted);">No matching orders found.</td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = filtered.map(o => {
+                const dateStr = new Date(o.created_at).toLocaleDateString('en-IN', {
+                    day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit'
+                });
+                return `
+                    <tr>
+                        <td><strong style="color:var(--text-primary); font-family:var(--font-mono);">${o.order_number}</strong></td>
+                        <td style="font-size:0.75rem; white-space:nowrap;">${dateStr}</td>
+                        <td>
+                            <strong style="color:var(--text-primary);">${o.customer_name || 'Customer'}</strong>
+                            <div style="font-family:var(--font-mono); font-size:0.75rem; color:var(--text-muted);">+91 ${o.customer_phone}</div>
+                        </td>
+                        <td style="max-width:280px;">
+                            <div>${o.file_names || 'Standard Model'}</div>
+                        </td>
+                        <td><strong style="color:var(--text-primary);">₹${Number(o.total_amount).toLocaleString('en-IN')}</strong></td>
+                        <td style="font-size:0.75rem;">${o.payment_method || 'Online'}</td>
+                        <td>
+                            <select class="status-select" onchange="updateStatus('${o.order_number}', this.value)">
+                                <option value="ORDER_PLACED" ${o.order_status === 'ORDER_PLACED' ? 'selected' : ''}>Order Placed</option>
+                                <option value="IN_PRODUCTION" ${o.order_status === 'IN_PRODUCTION' ? 'selected' : ''}>In Production</option>
+                                <option value="QUALITY_CHECK" ${o.order_status === 'QUALITY_CHECK' ? 'selected' : ''}>Quality Check</option>
+                                <option value="DISPATCHED" ${o.order_status === 'DISPATCHED' ? 'selected' : ''}>Dispatched</option>
+                                <option value="DELIVERED" ${o.order_status === 'DELIVERED' ? 'selected' : ''}>Delivered</option>
+                                <option value="CANCELLED" ${o.order_status === 'CANCELLED' ? 'selected' : ''}>Cancelled</option>
+                            </select>
+                        </td>
+                        <td>
+                            <button class="btn btn--outline btn--sm" style="font-size:0.72rem; padding:0.25rem 0.5rem;" onclick="viewCustomerHistory('${o.customer_phone}')">
+                                Customer History
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        // Render Customers Table
+        function renderCustomersTable() {
+            const tbody = document.getElementById('customersTableBody');
+            const searchVal = document.getElementById('custSearch').value.toLowerCase().trim();
+
+            let filtered = allCustomers.filter(c => {
+                if (!searchVal) return true;
+                return (c.phone && c.phone.includes(searchVal)) ||
+                    (c.name && c.name.toLowerCase().includes(searchVal)) ||
+                    (c.address && c.address.toLowerCase().includes(searchVal));
+            });
+
+            if (filtered.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; padding:2rem; color:var(--text-muted);">No customers found.</td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = filtered.map(c => {
+                const regDate = new Date(c.created_at).toLocaleDateString('en-IN', {
+                    day: 'numeric', month: 'short', year: 'numeric'
+                });
+                return `
+                    <tr>
+                        <td><strong style="color:var(--text-primary); font-family:var(--font-mono);">+91 ${c.phone}</strong></td>
+                        <td>${c.name || 'Valued Customer'}</td>
+                        <td style="max-width:240px; font-size:0.78rem;">${c.address || '—'}</td>
+                        <td><strong style="color:var(--text-primary);">${c.total_orders || 0}</strong></td>
+                        <td><strong style="color:var(--text-primary);">₹${Number(c.total_spent || 0).toLocaleString('en-IN')}</strong></td>
+                        <td style="font-size:0.75rem;">${regDate}</td>
+                        <td>
+                            <button class="btn btn--outline btn--sm" style="font-size:0.72rem; padding:0.25rem 0.5rem;" onclick="viewCustomerHistory('${c.phone}')">
+                                View Purchases
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        // Render Feedback Table
+        function renderFeedbackTable() {
+            const tbody = document.getElementById('feedbackTableBody');
+            if (allFeedback.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; padding:2rem; color:var(--text-muted);">No feedback submitted yet.</td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = allFeedback.map(f => {
+                const dateStr = new Date(f.created_at).toLocaleDateString('en-IN', {
+                    day: 'numeric', month: 'short', year: 'numeric'
+                });
+                return `
+                    <tr>
+                        <td style="font-size:0.75rem;">${dateStr}</td>
+                        <td style="font-family:var(--font-mono);">+91 ${f.customer_phone}</td>
+                        <td><strong style="color:#F59E0B;">${'★'.repeat(f.rating)}</strong> (${f.rating}/5)</td>
+                        <td>${f.category || 'General'}</td>
+                        <td style="color:var(--text-primary);">"${f.comments}"</td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        // Update Order Status
+        async function updateStatus(orderNumber, newStatus) {
+            try {
+                const res = await fetch('/api/orders', {
+                    method: 'PATCH',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ orderNumber, status: newStatus })
+                });
+                if (res.ok) {
+                    await loadAdminData();
+                } else {
+                    alert('Failed to update status');
+                }
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        // View Single Customer History Modal
+        async function viewCustomerHistory(phone) {
+            const modal = document.getElementById('adminCustModal');
+            const title = document.getElementById('adminCustModalTitle');
+            const phoneEl = document.getElementById('adminCustModalPhone');
+            const listEl = document.getElementById('adminCustOrdersList');
+
+            phoneEl.textContent = `+91 ${phone}`;
+            listEl.innerHTML = '<div style="text-align:center; padding:2rem;">Loading customer purchase history...</div>';
+            modal.classList.add('open');
+
+            try {
+                const res = await fetch(`/api/customers?phone=${phone}`);
+                const data = await res.json();
+
+                if (data.customer) {
+                    title.textContent = `${data.customer.name || 'Customer'} — History (${data.orders.length} orders)`;
+                }
+
+                if (!data.orders || data.orders.length === 0) {
+                    listEl.innerHTML = '<div style="text-align:center; padding:2rem; color:var(--text-muted);">No orders found for this customer.</div>';
+                    return;
+                }
+
+                listEl.innerHTML = data.orders.map(o => `
+                    <div class="order-card" style="margin-bottom:0.75rem;">
+                        <div class="order-card__header">
+                            <span class="order-card__id">${o.order_number}</span>
+                            <span class="order-status-badge ${o.order_status}">${o.order_status}</span>
+                        </div>
+                        <div class="order-card__items">
+                            <div><strong>Files:</strong> ${o.file_names || 'Standard'}</div>
+                            <div><strong>Total:</strong> ₹${Number(o.total_amount).toLocaleString('en-IN')} via ${o.payment_method}</div>
+                        </div>
+                        <div class="order-card__footer">
+                            <span style="font-size:0.75rem; color:var(--text-muted);">${new Date(o.created_at).toLocaleString('en-IN')}</span>
+                        </div>
+                    </div>
+                `).join('');
+            } catch (err) {
+                listEl.innerHTML = '<div style="color:var(--color-danger); text-align:center; padding:2rem;">Failed to load history.</div>';
+            }
+        }
+
+        // Event listeners for filters
+        document.getElementById('orderSearch').addEventListener('input', renderOrdersTable);
+        document.getElementById('orderStatusFilter').addEventListener('change', renderOrdersTable);
+        document.getElementById('custSearch').addEventListener('input', renderCustomersTable);
+        document.getElementById('adminRefreshBtn').addEventListener('click', () => {
+            checkHealth();
+            loadAdminData();
+        });
+
+        // Initialize
+        checkHealth();
+        loadAdminData();
+        setInterval(checkHealth, 30000); // Check health every 30s
+    </script>
+</body>
+</html>

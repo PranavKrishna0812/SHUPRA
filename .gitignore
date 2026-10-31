@@ -1,0 +1,15 @@
+# Dependencies
+node_modules/
+
+# Environment Variables
+.env
+.env.local
+.env.*.local
+
+# Local Database Files
+data/*.json
+!data/.gitkeep
+
+# System Files
+.DS_Store
+Thumbs.db

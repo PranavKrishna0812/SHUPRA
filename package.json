@@ -1,0 +1,30 @@
+{
+  "name": "shupra-3d",
+  "version": "1.0.0",
+  "description": "Shupra 3D — Custom 3D Printing, Sacred Art & E-Commerce Platform",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js",
+    "test": "node test-integrations.js",
+    "build": "echo \"Ready for Vercel Deployment\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/PranavKrishna0812/SHUPRA.git"
+  },
+  "keywords": [
+    "3d-printing",
+    "ecommerce",
+    "sacred-art",
+    "vercel",
+    "serverless"
+  ],
+  "author": "Shupra 3D",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "pg": "^8.13.1"
+  }
+}

@@ -53,6 +53,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initAddToCart();
     initAuth();
     initFeedbackModal();
+    initOrdersModal();
 
     // Animations
     if (!prefersReducedMotion) {
@@ -2093,6 +2094,31 @@ function initCheckoutModal() {
             status: 'PAID & BOOKED'
         };
 
+        // Save order to Vercel Backend & Database
+        try {
+            const apiRes = await fetch('/api/orders', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    customerPhone: document.getElementById('custPhone').value.trim(),
+                    customerName: document.getElementById('custName').value.trim(),
+                    customerAddress: document.getElementById('custAddress').value.trim(),
+                    paymentMethod: document.getElementById('custPayment').value,
+                    totalAmount: state.cart.reduce((s, i) => s + i.price * i.qty, 0),
+                    items: state.cart.map(i => ({ name: i.name, qty: i.qty, price: i.price, fileName: i.fileName || i.name })),
+                    fileNames: fileNamesList,
+                    fileBase64: customFileBase64
+                })
+            });
+            const apiData = await apiRes.json();
+            if (apiData && apiData.order && apiData.order.order_number) {
+                orderData.orderId = apiData.order.order_number;
+                console.log('[API] Order saved to database:', apiData.order);
+            }
+        } catch (apiErr) {
+            console.warn('[API] Order API call warning, relying on backup:', apiErr);
+        }
+
         // Dispatch order to Google Sheets & localStorage backup
         await sendOrderToGoogleSheets(orderData);
 
@@ -2301,6 +2327,21 @@ function initAuth() {
         pendingPhone = rawPhone;
         generatedOTP = Math.floor(100000 + Math.random() * 900000).toString();
 
+        // Sync with Backend OTP API
+        try {
+            fetch('/api/auth/otp', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ action: 'request', phone: pendingPhone })
+            }).then(r => r.json()).then(data => {
+                if (data && data.code) {
+                    generatedOTP = data.code;
+                    const otpEl = document.getElementById('otpCodeDisplay');
+                    if (otpEl) otpEl.textContent = generatedOTP;
+                }
+            }).catch(e => console.warn('[AUTH API] Using local OTP:', e));
+        } catch (e) {}
+
         if (displayOtpPhone) displayOtpPhone.textContent = `+91 ${pendingPhone.slice(0, 5)} ${pendingPhone.slice(5)}`;
         
         const otpCodeDisplay = document.getElementById('otpCodeDisplay');
@@ -2418,6 +2459,23 @@ function initAuth() {
             } catch (err) {
                 console.warn('Storage warning:', err);
             }
+
+            // Sync customer with Backend Database
+            try {
+                fetch('/api/auth/otp', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ action: 'verify', phone: pendingPhone, otp: enteredOtp })
+                }).then(r => r.json()).then(data => {
+                    if (data && data.customer) {
+                        state.currentUser.name = data.customer.name || '';
+                        state.currentUser.address = data.customer.address || '';
+                        state.currentUser.totalOrders = data.customer.total_orders || 0;
+                        state.currentUser.totalSpent = data.customer.total_spent || 0;
+                        localStorage.setItem('shupra_user', JSON.stringify(state.currentUser));
+                    }
+                }).catch(e => console.warn('[AUTH API] Verify sync:', e));
+            } catch (e) {}
 
             renderUserAuthState();
             closeAuthModal();
@@ -2537,6 +2595,20 @@ function initFeedbackModal() {
             category: document.getElementById('feedbackCategory').value,
             comments: document.getElementById('feedbackComments').value.trim()
         };
+
+        // Save to Backend Database
+        try {
+            fetch('/api/feedback', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    phone: state.currentUser ? state.currentUser.phone : 'Guest',
+                    rating: currentFeedbackRating,
+                    category: document.getElementById('feedbackCategory').value,
+                    comments: document.getElementById('feedbackComments').value.trim()
+                })
+            }).catch(e => console.warn('[Feedback API]', e));
+        } catch (e) {}
 
         // Save to local feedback queue
         const localFeedback = safeGetStorage('shupra_feedback_queue', []);
