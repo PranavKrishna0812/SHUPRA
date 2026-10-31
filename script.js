@@ -39,29 +39,37 @@ const state = {
 document.addEventListener('DOMContentLoaded', () => {
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
+    const safeInit = (fn, name) => {
+        try {
+            if (typeof fn === 'function') fn();
+        } catch (err) {
+            console.warn('[Init] Non-critical warning in ' + name + ':', err);
+        }
+    };
+
     // Core UI
-    initAnnouncementBar();
-    initNavbar();
-    initMobileMenu();
-    initSearch();
-    initSmoothScroll();
+    safeInit(initAnnouncementBar, 'AnnouncementBar');
+    safeInit(initNavbar, 'Navbar');
+    safeInit(initMobileMenu, 'MobileMenu');
+    safeInit(initSearch, 'Search');
+    safeInit(initSmoothScroll, 'SmoothScroll');
 
     // E-Commerce & Auth
-    initCart();
-    initWishlist();
-    initGalleryFilter();
-    initAddToCart();
-    initAuth();
-    initFeedbackModal();
-    initOrdersModal();
+    safeInit(initCart, 'Cart');
+    safeInit(initWishlist, 'Wishlist');
+    safeInit(initGalleryFilter, 'GalleryFilter');
+    safeInit(initAddToCart, 'AddToCart');
+    safeInit(initAuth, 'Auth');
+    safeInit(initFeedbackModal, 'FeedbackModal');
+    safeInit(initOrdersModal, 'OrdersModal');
 
-    // Animations
+    // Animations & Visual Reveals
     if (!prefersReducedMotion) {
-        initScrollReveal();
-        initCounters();
-        initParticleCanvas();
-        initMarquee();
-        initTitleCycler();
+        safeInit(initScrollReveal, 'ScrollReveal');
+        safeInit(initCounters, 'Counters');
+        safeInit(initParticleCanvas, 'ParticleCanvas');
+        safeInit(initMarquee, 'Marquee');
+        safeInit(initTitleCycler, 'TitleCycler');
     } else {
         document.querySelectorAll('.reveal').forEach(el => el.classList.add('revealed'));
         document.querySelectorAll('[data-count]').forEach(el => {
@@ -69,17 +77,24 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // Safety fallback: ensure initial viewport elements are revealed immediately
+    setTimeout(() => {
+        document.querySelectorAll('.hero .reveal, .hero__badge, .hero__title, .hero__subtitle, .hero__actions, .hero__stats').forEach(el => {
+            el.classList.add('revealed');
+        });
+    }, 100);
+
     // Components
-    initTestimonialCarousel();
-    initBackToTop();
-    init3DStudioConfigurator();
-    initMobileBottomNav();
-    initNewsletterForm();
-    initGalleryCardLinks();
-    initCollectionControls();
-    initCheckoutModal();
-    initLenis();
-    initMagneticButtons();
+    safeInit(initTestimonialCarousel, 'TestimonialCarousel');
+    safeInit(initBackToTop, 'BackToTop');
+    safeInit(init3DStudioConfigurator, 'StudioConfigurator');
+    safeInit(initMobileBottomNav, 'MobileBottomNav');
+    safeInit(initNewsletterForm, 'NewsletterForm');
+    safeInit(initGalleryCardLinks, 'GalleryCardLinks');
+    safeInit(initCollectionControls, 'CollectionControls');
+    safeInit(initCheckoutModal, 'CheckoutModal');
+    safeInit(initLenis, 'Lenis');
+    safeInit(initMagneticButtons, 'MagneticButtons');
 });
 
 // ═══════════════════════════════════════════════════════════════════════════════
@@ -2655,3 +2670,191 @@ function initFeedbackModal() {
 
 
 
+
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// 34. CUSTOMER ORDERS & PURCHASE HISTORY SYSTEM
+// ═══════════════════════════════════════════════════════════════════════════════
+function initOrdersModal() {
+    const ordersOverlay = document.getElementById('ordersModalOverlay');
+    const ordersClose = document.getElementById('ordersModalClose');
+    const dropdownOrdersBtn = document.getElementById('dropdownOrdersBtn');
+    const searchInput = document.getElementById('orderSearchInput');
+    const searchBtn = document.getElementById('orderSearchBtn');
+    const cardsContainer = document.getElementById('ordersCardsContainer');
+    const loadingEl = document.getElementById('ordersLoading');
+    const emptyEl = document.getElementById('ordersEmpty');
+    const statsCard = document.getElementById('customerStatsCard');
+    const statPhone = document.getElementById('custStatPhone');
+    const statCount = document.getElementById('custStatCount');
+    const statSpent = document.getElementById('custStatSpent');
+
+    function openOrdersModal() {
+        if (ordersOverlay) {
+            ordersOverlay.classList.add('open');
+            lockScroll();
+            loadCustomerOrders();
+        }
+    }
+
+    function closeOrdersModal() {
+        if (ordersOverlay) {
+            ordersOverlay.classList.remove('open');
+            unlockScroll();
+        }
+    }
+
+    dropdownOrdersBtn?.addEventListener('click', () => {
+        const navUserDropdown = document.getElementById('navUserDropdown');
+        if (navUserDropdown) navUserDropdown.style.display = 'none';
+        openOrdersModal();
+    });
+
+    ordersClose?.addEventListener('click', closeOrdersModal);
+    ordersOverlay?.addEventListener('click', e => {
+        if (e.target === ordersOverlay) closeOrdersModal();
+    });
+
+    async function loadCustomerOrders() {
+        if (!cardsContainer) return;
+        cardsContainer.innerHTML = '';
+        if (emptyEl) emptyEl.style.display = 'none';
+        if (loadingEl) loadingEl.style.display = 'block';
+
+        const user = state.currentUser;
+        if (user && user.loggedIn && user.phone) {
+            if (statsCard) statsCard.style.display = 'grid';
+            if (statPhone) statPhone.textContent = user.formatted || ('+91 ' + user.phone);
+            
+            try {
+                const res = await fetch('/api/customers?phone=' + encodeURIComponent(user.phone));
+                const data = await res.json();
+                if (loadingEl) loadingEl.style.display = 'none';
+
+                if (data && data.customer) {
+                    if (statCount) statCount.textContent = data.customer.total_orders || 0;
+                    if (statSpent) statSpent.textContent = '₹' + Number(data.customer.total_spent || 0).toLocaleString('en-IN');
+                }
+
+                if (data && data.orders && data.orders.length > 0) {
+                    renderOrderCards(data.orders);
+                } else {
+                    const localQueue = safeGetStorage('shupra_orders_queue', []);
+                    const myOrders = localQueue.filter(o => o.customerPhone && o.customerPhone.includes(user.phone));
+                    if (myOrders.length > 0) {
+                        renderLocalOrderCards(myOrders);
+                    } else if (emptyEl) {
+                        emptyEl.style.display = 'block';
+                    }
+                }
+            } catch (err) {
+                if (loadingEl) loadingEl.style.display = 'none';
+                console.warn('[Orders] Backend fetch error:', err);
+                const localQueue = safeGetStorage('shupra_orders_queue', []);
+                if (localQueue.length > 0) {
+                    renderLocalOrderCards(localQueue);
+                } else if (emptyEl) {
+                    emptyEl.style.display = 'block';
+                }
+            }
+        } else {
+            // Guest mode
+            if (statsCard) statsCard.style.display = 'none';
+            if (loadingEl) loadingEl.style.display = 'none';
+            
+            const localQueue = safeGetStorage('shupra_orders_queue', []);
+            if (localQueue.length > 0) {
+                renderLocalOrderCards(localQueue);
+            } else if (emptyEl) {
+                emptyEl.style.display = 'block';
+            }
+        }
+    }
+
+    function renderOrderCards(orders) {
+        if (!cardsContainer) return;
+        cardsContainer.innerHTML = orders.map(o => {
+            const dateStr = new Date(o.created_at).toLocaleDateString('en-IN', {
+                day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit'
+            });
+            const statusLabel = (o.order_status || 'ORDER_PLACED').replace(/_/g, ' ');
+            return `
+                <div class="order-card">
+                    <div class="order-card__header">
+                        <span class="order-card__id">${escapeHtml(o.order_number)}</span>
+                        <span class="order-status-badge ${escapeHtml(o.order_status)}">${escapeHtml(statusLabel)}</span>
+                    </div>
+                    <div class="order-card__items">
+                        <div><strong>Print Job:</strong> ${escapeHtml(o.file_names || 'Custom 3D Print')}</div>
+                        ${o.tracking_number ? `<div style="color:#38BDF8; font-size:0.75rem; margin-top:0.2rem;">🚚 Courier AWB: ${escapeHtml(o.tracking_number)}</div>` : ''}
+                    </div>
+                    <div class="order-card__footer">
+                        <span class="order-card__total">₹${Number(o.total_amount).toLocaleString('en-IN')}</span>
+                        <span class="order-card__date">${escapeHtml(dateStr)}</span>
+                    </div>
+                </div>
+            `;
+        }).join('');
+    }
+
+    function renderLocalOrderCards(orders) {
+        if (!cardsContainer) return;
+        cardsContainer.innerHTML = orders.map(o => `
+            <div class="order-card">
+                <div class="order-card__header">
+                    <span class="order-card__id">${escapeHtml(o.orderId || 'SHP-ORDER')}</span>
+                    <span class="order-status-badge ORDER_PLACED">ORDER PLACED</span>
+                </div>
+                <div class="order-card__items">
+                    <div>${escapeHtml(o.fileName || o.items || 'Custom 3D Print')}</div>
+                </div>
+                <div class="order-card__footer">
+                    <span class="order-card__total">${escapeHtml(o.total || '₹0')}</span>
+                    <span class="order-card__date">${escapeHtml(o.timestamp || '')}</span>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    // Direct Order Search by ID
+    async function searchSingleOrder() {
+        const query = searchInput ? searchInput.value.trim() : '';
+        if (!query) {
+            loadCustomerOrders();
+            return;
+        }
+
+        if (loadingEl) loadingEl.style.display = 'block';
+        if (cardsContainer) cardsContainer.innerHTML = '';
+        if (emptyEl) emptyEl.style.display = 'none';
+
+        try {
+            const res = await fetch('/api/orders?orderNumber=' + encodeURIComponent(query));
+            const data = await res.json();
+            if (loadingEl) loadingEl.style.display = 'none';
+
+            if (data && data.order) {
+                renderOrderCards([data.order]);
+            } else {
+                if (emptyEl) {
+                    emptyEl.style.display = 'block';
+                    const h4 = emptyEl.querySelector('h4');
+                    const p = emptyEl.querySelector('p');
+                    if (h4) h4.textContent = 'Order Not Found';
+                    if (p) p.textContent = 'No record found matching "' + query + '". Check the Order ID and try again.';
+                }
+            }
+        } catch (err) {
+            if (loadingEl) loadingEl.style.display = 'none';
+            if (emptyEl) emptyEl.style.display = 'block';
+        }
+    }
+
+    searchBtn?.addEventListener('click', searchSingleOrder);
+    searchInput?.addEventListener('keydown', e => {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            searchSingleOrder();
+        }
+    });
+}
