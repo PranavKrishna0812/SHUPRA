@@ -29,6 +29,8 @@ const customersHandler = require('./api/customers');
 const ordersHandler = require('./api/orders');
 const feedbackHandler = require('./api/feedback');
 const adminHandler = require('./api/admin');
+const adminLoginHandler = require('./api/admin/login');
+const productsHandler = require('./api/products');
 
 app.all('/api/health', (req, res) => healthHandler(req, res));
 app.all('/api/auth/otp', (req, res) => authOtpHandler(req, res));
@@ -36,6 +38,8 @@ app.all('/api/customers', (req, res) => customersHandler(req, res));
 app.all('/api/orders', (req, res) => ordersHandler(req, res));
 app.all('/api/feedback', (req, res) => feedbackHandler(req, res));
 app.all('/api/admin', (req, res) => adminHandler(req, res));
+app.all('/api/admin/login', (req, res) => adminLoginHandler(req, res));
+app.all('/api/products', (req, res) => productsHandler(req, res));
 
 // Direct route aliases
 app.get('/admin', (req, res) => {

@@ -1,6 +1,15 @@
 const db = require('../lib/db');
 const { setCorsHeaders, parseBody, sendJson } = require('../lib/utils');
 
+function extractAdminToken(req) {
+    const auth = req.headers['authorization'] || req.headers['x-admin-token'];
+    if (!auth) return null;
+    if (typeof auth === 'string' && auth.toLowerCase().startsWith('bearer ')) {
+        return auth.substring(7).trim();
+    }
+    return auth;
+}
+
 module.exports = async (req, res) => {
     setCorsHeaders(res);
     if (req.method === 'OPTIONS') {
@@ -13,12 +22,14 @@ module.exports = async (req, res) => {
             const customers = await db.getAllCustomers();
             const orders = await db.getOrders({ limit: 100 });
             const feedback = await db.getAllFeedback();
+            const products = await db.getProducts();
 
             return sendJson(res, 200, {
                 stats,
                 customers,
                 orders,
-                feedback
+                feedback,
+                products
             });
         }
 

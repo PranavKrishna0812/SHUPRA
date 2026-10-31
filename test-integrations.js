@@ -155,10 +155,121 @@ async function runTests() {
             console.log('✓ Admin stats:', adminRes.data.stats);
             console.log('✓ Customers in DB:', adminRes.data.customers.length);
             console.log('✓ Orders in DB:', adminRes.data.orders.length);
+            console.log('✓ Products in DB:', (adminRes.data.products || []).length);
             console.log('✓ Reviews in DB:', adminRes.data.feedback.length);
 
+            // Test 10: Admin Login (Valid Credentials)
+            console.log('\nTest 10: POST /api/admin/login (Valid Credentials)');
+            const adminLoginRes = await request({
+                hostname: 'localhost',
+                port: PORT,
+                path: '/api/admin/login',
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' }
+            }, { email: 'admin@shupra3d.com', password: 'ShupraAdmin@2026' });
+            console.log('✓ Admin Login status:', adminLoginRes.status, 'Admin:', adminLoginRes.data.admin.email);
+            if (adminLoginRes.status !== 200 || !adminLoginRes.data.token) throw new Error('Admin login failed');
+            const adminToken = adminLoginRes.data.token;
+
+            // Test 11: Admin Login (Invalid Credentials Rejection)
+            console.log('\nTest 11: POST /api/admin/login (Invalid Credentials Rejection)');
+            const badLoginRes = await request({
+                hostname: 'localhost',
+                port: PORT,
+                path: '/api/admin/login',
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' }
+            }, { email: 'admin@shupra3d.com', password: 'WrongPassword' });
+            console.log('✓ Bad Login rejected with status:', badLoginRes.status, 'Error:', badLoginRes.data.error);
+            if (badLoginRes.status !== 401) throw new Error('Bad admin credentials should be rejected with 401');
+
+            // Test 12: Fetch Public Products Catalog
+            console.log('\nTest 12: GET /api/products');
+            const productsRes = await request({
+                hostname: 'localhost',
+                port: PORT,
+                path: '/api/products',
+                method: 'GET'
+            });
+            console.log('✓ Products count:', productsRes.data.count);
+            if (productsRes.status !== 200 || productsRes.data.products.length === 0) throw new Error('Products fetch failed');
+
+            // Test 13: Create Product as Admin
+            console.log('\nTest 13: POST /api/products (Admin Auth)');
+            const newProdRes = await request({
+                hostname: 'localhost',
+                port: PORT,
+                path: '/api/products',
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${adminToken}`
+                }
+            }, {
+                name: 'Parametric Gyroid Lamp Shade',
+                category: 'decor',
+                price: 1899,
+                original_price: 2499,
+                material: 'Translucent PETG',
+                description: 'Math-inspired minimal gyroid infill lampshade that diffuses LED warmth organically.',
+                image_url: 'assets/hero_render.png',
+                badge: 'New Release',
+                in_stock: true
+            });
+            console.log('✓ Product Created:', newProdRes.status, 'ID:', newProdRes.data.product.id, 'Name:', newProdRes.data.product.name);
+            if (newProdRes.status !== 201) throw new Error('Product creation failed');
+            const createdProdId = newProdRes.data.product.id;
+
+            // Test 14: Unauthorized Product Create Rejection
+            console.log('\nTest 14: POST /api/products (Unauthorized Rejection)');
+            const unauthRes = await request({
+                hostname: 'localhost',
+                port: PORT,
+                path: '/api/products',
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' }
+            }, {
+                name: 'Unauthorized Product',
+                price: 999
+            });
+            console.log('✓ Unauthorized create rejected with status:', unauthRes.status);
+            if (unauthRes.status !== 401) throw new Error('Unauthorized create should return 401');
+
+            // Test 15: Update Product Price, Photo & Description
+            console.log('\nTest 15: PUT /api/products (Update Price & Description)');
+            const updateProdRes = await request({
+                hostname: 'localhost',
+                port: PORT,
+                path: '/api/products',
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${adminToken}`
+                }
+            }, {
+                id: createdProdId,
+                price: 1999,
+                description: 'Updated description: Math-inspired minimal gyroid infill lampshade with warm tone dispersion.'
+            });
+            console.log('✓ Product Updated:', updateProdRes.status, 'New Price: ₹' + updateProdRes.data.product.price);
+            if (updateProdRes.status !== 200 || updateProdRes.data.product.price !== 1999) throw new Error('Product update failed');
+
+            // Test 16: Delete Product as Admin
+            console.log('\nTest 16: DELETE /api/products (Admin Auth)');
+            const deleteProdRes = await request({
+                hostname: 'localhost',
+                port: PORT,
+                path: `/api/products?id=${createdProdId}`,
+                method: 'DELETE',
+                headers: {
+                    'Authorization': `Bearer ${adminToken}`
+                }
+            });
+            console.log('✓ Product Deleted:', deleteProdRes.status, 'Message:', deleteProdRes.data.message);
+            if (deleteProdRes.status !== 200) throw new Error('Product deletion failed');
+
             console.log(`\n======================================================`);
-            console.log(`✅ ALL 9 INTEGRATION & HEALTH TESTS PASSED PERFECTLY!`);
+            console.log(`✅ ALL 16 INTEGRATION, HEALTH & ADMIN TESTS PASSED!`);
             console.log(`======================================================\n`);
         } catch (error) {
             console.error('\n❌ Test failed:', error);

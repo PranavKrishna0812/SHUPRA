@@ -3,55 +3,194 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Shupra 3D — Admin &amp; Print Queue Portal</title>
+    <title>Shupra 3D — Admin, Catalog &amp; Operations Portal</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
     <style>
-        .admin-page {
-            background-color: var(--bg-primary);
-            color: var(--text-primary);
+        :root {
+            --admin-bg: #210635;
+            --admin-card: rgba(66, 13, 75, 0.45);
+            --admin-card-hover: rgba(66, 13, 75, 0.7);
+            --admin-border: rgba(245, 213, 224, 0.16);
+            --admin-accent: #7B337E;
+            --admin-btn: #6667AB;
+            --admin-text-main: #FFFFFF;
+            --admin-text-sub: #F5D5E0;
+            --admin-text-muted: rgba(245, 213, 224, 0.65);
+        }
+
+        body.admin-page {
+            background-color: var(--admin-bg) !important;
+            color: var(--admin-text-main);
             min-height: 100vh;
             padding-bottom: 4rem;
+            font-family: var(--font-main);
         }
+
+        /* ------------------ AUTH GATE / LOGIN VIEW ------------------ */
+        .auth-gate-wrapper {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 90vh;
+            padding: 1.5rem;
+        }
+
+        .auth-card {
+            background: rgba(49, 10, 58, 0.95);
+            backdrop-filter: blur(24px);
+            border: 1px solid var(--admin-border);
+            border-radius: var(--r-lg);
+            width: 100%;
+            max-width: 440px;
+            padding: 2.5rem 2rem;
+            box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.7), 0 0 40px rgba(123, 51, 126, 0.25);
+            animation: fadeIn 0.4s ease-out;
+        }
+
+        .auth-logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .auth-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            text-align: center;
+            color: var(--admin-text-main);
+            margin-bottom: 0.35rem;
+        }
+
+        .auth-subtitle {
+            font-size: 0.82rem;
+            color: var(--admin-text-muted);
+            text-align: center;
+            line-height: 1.5;
+            margin-bottom: 1.75rem;
+        }
+
+        .auth-error {
+            display: none;
+            background: rgba(239, 68, 68, 0.15);
+            border: 1px solid rgba(239, 68, 68, 0.4);
+            color: #FCA5A5;
+            padding: 0.75rem;
+            border-radius: var(--r-sm);
+            font-size: 0.8rem;
+            margin-bottom: 1.25rem;
+            text-align: center;
+        }
+
+        .auth-form {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.76rem;
+            font-family: var(--font-mono);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--admin-text-sub);
+            margin-bottom: 0.4rem;
+        }
+
+        .form-control {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--admin-border);
+            border-radius: var(--r-sm);
+            padding: 0.75rem 1rem;
+            color: #FFFFFF;
+            font-size: 0.9rem;
+            transition: all var(--t-fast);
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--admin-text-sub);
+            background: rgba(255, 255, 255, 0.08);
+            box-shadow: 0 0 0 3px rgba(102, 103, 171, 0.3);
+        }
+
+        .demo-cred-box {
+            margin-top: 1.5rem;
+            padding: 0.85rem;
+            background: rgba(102, 103, 171, 0.12);
+            border: 1px dashed rgba(102, 103, 171, 0.4);
+            border-radius: var(--r-sm);
+            font-size: 0.75rem;
+            color: var(--admin-text-sub);
+            display: flex;
+            flex-direction: column;
+            gap: 0.4rem;
+        }
+
+        /* ------------------ ADMIN HEADER ------------------ */
         .admin-header {
-            background: rgba(33, 6, 53, 0.88);
+            background: rgba(33, 6, 53, 0.92);
             backdrop-filter: blur(16px);
-            border-bottom: 1px solid var(--border-subtle);
+            border-bottom: 1px solid var(--admin-border);
             position: sticky;
             top: 0;
             z-index: 100;
-            padding: 1rem 0;
+            padding: 0.85rem 0;
         }
+
         .admin-header-inner {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            max-width: 1400px;
+            max-width: 1440px;
             margin: 0 auto;
             padding: 0 1.5rem;
         }
+
         .admin-title-area {
             display: flex;
             align-items: center;
             gap: 1rem;
         }
+
         .admin-badge-portal {
-            background: rgba(255, 255, 255, 0.08);
-            border: 1px solid var(--border-subtle);
+            background: rgba(123, 51, 126, 0.35);
+            border: 1px solid var(--admin-border);
+            color: var(--admin-text-sub);
             font-family: var(--font-mono);
             font-size: 0.72rem;
-            padding: 0.25rem 0.6rem;
+            padding: 0.25rem 0.65rem;
             border-radius: var(--r-sm);
             text-transform: uppercase;
             letter-spacing: 0.05em;
         }
+
         .admin-actions {
             display: flex;
             align-items: center;
-            gap: 1rem;
+            gap: 0.75rem;
+            flex-wrap: wrap;
         }
+
+        .admin-user-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--admin-border);
+            padding: 0.3rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-family: var(--font-mono);
+            color: var(--admin-text-sub);
+        }
+
         .health-indicator {
             display: inline-flex;
             align-items: center;
@@ -60,15 +199,17 @@
             font-size: 0.75rem;
             padding: 0.35rem 0.75rem;
             border-radius: 9999px;
-            background: rgba(16, 185, 129, 0.1);
+            background: rgba(16, 185, 129, 0.12);
             color: #10B981;
-            border: 1px solid rgba(16, 185, 129, 0.25);
+            border: 1px solid rgba(16, 185, 129, 0.3);
         }
+
         .health-indicator.degraded {
-            background: rgba(245, 158, 11, 0.1);
+            background: rgba(245, 158, 11, 0.12);
             color: #F59E0B;
-            border-color: rgba(245, 158, 11, 0.25);
+            border-color: rgba(245, 158, 11, 0.3);
         }
+
         .health-dot {
             width: 7px;
             height: 7px;
@@ -76,83 +217,100 @@
             background: currentColor;
             animation: pulse-dot 2s infinite;
         }
-        @keyframes pulse-dot {
-            0%, 100% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.4; transform: scale(0.85); }
-        }
+
+        /* ------------------ MAIN CONTAINER ------------------ */
         .admin-container {
-            max-width: 1400px;
+            max-width: 1440px;
             margin: 2rem auto;
             padding: 0 1.5rem;
         }
+
         .kpi-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
             gap: 1rem;
             margin-bottom: 2rem;
         }
+
         .kpi-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border-subtle);
+            background: var(--admin-card);
+            border: 1px solid var(--admin-border);
             border-radius: var(--r-md);
             padding: 1.25rem;
-            transition: border-color var(--t-fast);
+            transition: all var(--t-fast);
         }
+
         .kpi-card:hover {
-            border-color: rgba(255, 255, 255, 0.15);
+            background: var(--admin-card-hover);
+            border-color: rgba(245, 213, 224, 0.3);
+            transform: translateY(-2px);
         }
+
         .kpi-label {
-            font-size: 0.75rem;
+            font-size: 0.72rem;
             text-transform: uppercase;
-            letter-spacing: 0.05em;
-            color: var(--text-muted);
+            letter-spacing: 0.06em;
+            color: var(--admin-text-muted);
             font-family: var(--font-mono);
             margin-bottom: 0.4rem;
         }
+
         .kpi-val {
             font-size: 1.85rem;
             font-weight: 700;
-            color: var(--text-primary);
+            color: #FFFFFF;
             line-height: 1.2;
         }
+
         .kpi-sub {
             font-size: 0.75rem;
-            color: var(--text-secondary);
+            color: var(--admin-text-sub);
             margin-top: 0.35rem;
         }
+
+        /* ------------------ TABS ------------------ */
         .admin-tabs {
             display: flex;
             gap: 0.5rem;
-            border-bottom: 1px solid var(--border-subtle);
+            border-bottom: 1px solid var(--admin-border);
             margin-bottom: 1.5rem;
             overflow-x: auto;
+            padding-bottom: 2px;
         }
+
         .admin-tab {
             background: none;
             border: none;
-            padding: 0.75rem 1.25rem;
+            padding: 0.85rem 1.4rem;
             font-size: 0.88rem;
             font-weight: 500;
-            color: var(--text-muted);
+            color: var(--admin-text-muted);
             cursor: pointer;
-            border-bottom: 2px solid transparent;
+            border-bottom: 3px solid transparent;
             transition: all var(--t-fast);
             white-space: nowrap;
         }
+
         .admin-tab:hover {
-            color: var(--text-primary);
+            color: #FFFFFF;
         }
+
         .admin-tab.active {
-            color: var(--text-primary);
-            border-bottom-color: var(--color-accent);
+            color: #FFFFFF;
+            border-bottom-color: var(--admin-text-sub);
             font-weight: 600;
         }
+
         .tab-panel {
             display: none;
         }
+
         .tab-panel.active {
             display: block;
+            animation: fadeIn 0.25s ease;
         }
+
+        /* ------------------ TABLE & TOOLBAR ------------------ */
         .table-toolbar {
             display: flex;
             justify-content: space-between;
@@ -161,360 +319,1006 @@
             margin-bottom: 1.25rem;
             flex-wrap: wrap;
         }
+
         .search-group {
             display: flex;
-            gap: 0.5rem;
+            gap: 0.65rem;
             align-items: center;
             flex: 1;
-            max-width: 480px;
+            max-width: 540px;
         }
+
         .data-table-wrapper {
-            background: var(--bg-card);
-            border: 1px solid var(--border-subtle);
+            background: var(--admin-card);
+            border: 1px solid var(--admin-border);
             border-radius: var(--r-md);
             overflow-x: auto;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
         }
+
         .data-table {
             width: 100%;
             border-collapse: collapse;
-            font-size: 0.84rem;
+            font-size: 0.85rem;
             text-align: left;
         }
+
         .data-table th {
-            background: rgba(255, 255, 255, 0.02);
-            padding: 0.85rem 1rem;
+            background: rgba(33, 6, 53, 0.6);
+            padding: 0.9rem 1rem;
             font-size: 0.72rem;
             text-transform: uppercase;
             letter-spacing: 0.06em;
-            color: var(--text-muted);
+            color: var(--admin-text-sub);
             font-family: var(--font-mono);
-            border-bottom: 1px solid var(--border-subtle);
+            border-bottom: 1px solid var(--admin-border);
             white-space: nowrap;
         }
+
         .data-table td {
-            padding: 0.85rem 1rem;
-            border-bottom: 1px solid var(--border-subtle);
-            color: var(--text-secondary);
+            padding: 0.9rem 1rem;
+            border-bottom: 1px solid rgba(245, 213, 224, 0.08);
+            color: var(--admin-text-muted);
             vertical-align: middle;
         }
+
         .data-table tr:hover td {
-            background: rgba(255, 255, 255, 0.015);
-            color: var(--text-primary);
+            background: rgba(123, 51, 126, 0.12);
+            color: #FFFFFF;
         }
-        .status-select {
-            background: var(--bg-primary);
-            border: 1px solid var(--border-subtle);
-            color: var(--text-primary);
-            font-size: 0.75rem;
+
+        /* ------------------ PRODUCT CARD & TABLE ELEMENTS ------------------ */
+        .prod-thumb {
+            width: 48px;
+            height: 48px;
+            border-radius: var(--r-sm);
+            object-fit: cover;
+            background: rgba(0, 0, 0, 0.25);
+            border: 1px solid var(--admin-border);
+            display: block;
+        }
+
+        .badge-pill {
+            display: inline-block;
+            font-size: 0.68rem;
             font-family: var(--font-mono);
-            padding: 0.3rem 0.5rem;
+            padding: 0.15rem 0.45rem;
+            border-radius: 9999px;
+            background: rgba(102, 103, 171, 0.3);
+            border: 1px solid rgba(102, 103, 171, 0.6);
+            color: var(--admin-text-sub);
+            margin-top: 0.2rem;
+        }
+
+        .stock-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            font-size: 0.72rem;
+            font-family: var(--font-mono);
+            padding: 0.2rem 0.5rem;
+            border-radius: 9999px;
+        }
+
+        .stock-badge.in-stock {
+            background: rgba(16, 185, 129, 0.15);
+            color: #10B981;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+
+        .stock-badge.out-stock {
+            background: rgba(239, 68, 68, 0.15);
+            color: #EF4444;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+
+        .status-select {
+            background: var(--admin-bg);
+            border: 1px solid var(--admin-border);
+            color: #FFFFFF;
+            font-size: 0.76rem;
+            font-family: var(--font-mono);
+            padding: 0.35rem 0.6rem;
             border-radius: var(--r-sm);
             cursor: pointer;
         }
+
         .status-select:focus {
-            border-color: var(--color-focus);
+            border-color: var(--admin-text-sub);
             outline: none;
+        }
+
+        /* ------------------ MODAL DIALOGS ------------------ */
+        .admin-modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.82);
+            backdrop-filter: blur(8px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            padding: 1rem;
+            animation: fadeIn 0.2s ease-out;
+        }
+
+        .admin-modal-overlay.open {
+            display: flex;
+        }
+
+        .admin-modal {
+            background: #2a083f;
+            border: 1px solid var(--admin-border);
+            border-radius: var(--r-lg);
+            width: 100%;
+            max-width: 640px;
+            max-height: 90vh;
+            overflow-y: auto;
+            padding: 2rem;
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.7);
+        }
+
+        .admin-modal-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid var(--admin-border);
+            padding-bottom: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .admin-modal-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #FFFFFF;
+        }
+
+        .admin-modal-close {
+            background: none;
+            border: none;
+            color: var(--admin-text-sub);
+            font-size: 1.5rem;
+            cursor: pointer;
+            line-height: 1;
+            padding: 0.25rem;
+        }
+
+        .admin-modal-close:hover {
+            color: #FFFFFF;
+        }
+
+        .preview-box {
+            width: 100%;
+            height: 180px;
+            border: 2px dashed var(--admin-border);
+            border-radius: var(--r-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            background: rgba(0, 0, 0, 0.25);
+            margin-top: 0.5rem;
+            position: relative;
+        }
+
+        .preview-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .preview-placeholder {
+            color: var(--admin-text-muted);
+            font-size: 0.8rem;
+            font-family: var(--font-mono);
+            text-align: center;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
         }
     </style>
 </head>
 <body class="admin-page">
-    <!-- Admin Header -->
-    <header class="admin-header">
-        <div class="admin-header-inner">
-            <div class="admin-title-area">
-                <a href="index.html" class="nav__logo" style="margin-right:0.5rem;">
-                    <svg class="nav__logo-icon" width="24" height="24" viewBox="0 0 32 32" fill="none">
-                        <path d="M16 2L28 9V23L16 30L4 23V9L16 2Z" stroke="#E8E8E8" stroke-width="1.5" fill="rgba(255,255,255,0.05)"/>
-                        <path d="M16 2L28 9L16 16L4 9L16 2Z" fill="rgba(255,255,255,0.1)" stroke="#E8E8E8" stroke-width="1"/>
-                        <path d="M16 16V30" stroke="#E8E8E8" stroke-width="1" opacity="0.4"/>
-                    </svg>
-                    Shupra 3D
-                </a>
-                <span class="admin-badge-portal">Admin &amp; Customer Portal</span>
-            </div>
 
-            <div class="admin-actions">
-                <div class="health-indicator" id="apiHealthBadge" title="Backend Health Status">
-                    <span class="health-dot"></span>
-                    <span id="apiHealthText">System: Checking...</span>
+    <!-- ==================== 1. ADMIN AUTH GATE / LOGIN SCREEN ==================== -->
+    <div id="adminAuthGate" class="auth-gate-wrapper">
+        <div class="auth-card">
+            <div class="auth-logo">
+                <svg width="34" height="34" viewBox="0 0 32 32" fill="none">
+                    <path d="M16 2L28 9V23L16 30L4 23V9L16 2Z" stroke="#F5D5E0" stroke-width="1.8" fill="rgba(123, 51, 126, 0.3)"/>
+                    <path d="M16 2L28 9L16 16L4 9L16 2Z" fill="rgba(245, 213, 224, 0.2)" stroke="#F5D5E0" stroke-width="1.2"/>
+                    <path d="M16 16V30" stroke="#F5D5E0" stroke-width="1.2" opacity="0.6"/>
+                </svg>
+                <span style="font-weight:700; font-size:1.4rem; letter-spacing:0.02em; color:#FFFFFF;">Shupra 3D</span>
+            </div>
+            
+            <h1 class="auth-title">Admin Management Portal</h1>
+            <p class="auth-subtitle">Sign in to add/edit products, configure pricing, upload photos, and inspect all customer orders.</p>
+
+            <div class="auth-error" id="authErrorMsg"></div>
+
+            <form class="auth-form" id="adminLoginForm">
+                <div class="form-group">
+                    <label for="adminEmailInput">Admin Email</label>
+                    <input type="email" id="adminEmailInput" class="form-control" placeholder="admin@shupra3d.com" required value="admin@shupra3d.com">
                 </div>
-                <button type="button" class="btn btn--outline btn--sm" id="adminRefreshBtn" style="padding:0.4rem 0.75rem;">
-                    ↻ Refresh Data
+                <div class="form-group">
+                    <label for="adminPasswordInput">Admin Password</label>
+                    <input type="password" id="adminPasswordInput" class="form-control" placeholder="••••••••••••" required value="ShupraAdmin@2026">
+                </div>
+                <button type="submit" class="btn btn--primary btn--full" id="adminLoginSubmitBtn" style="margin-top:0.5rem; background:var(--admin-btn); padding:0.8rem;">
+                    Sign In to Admin Portal →
                 </button>
-                <a href="index.html" class="btn btn--primary btn--sm" style="padding:0.4rem 0.75rem;">
-                    ← Back to Store
-                </a>
-            </div>
-        </div>
-    </header>
+            </form>
 
-    <main class="admin-container">
-        <!-- Overview KPIs -->
-        <div class="kpi-grid">
-            <div class="kpi-card">
-                <div class="kpi-label">Registered Customers</div>
-                <div class="kpi-val" id="kpiCustomers">0</div>
-                <div class="kpi-sub" id="kpiCustomersSub">Unique verified phone accounts</div>
-            </div>
-            <div class="kpi-card">
-                <div class="kpi-label">Total Print Orders</div>
-                <div class="kpi-val" id="kpiOrders">0</div>
-                <div class="kpi-sub" id="kpiOrdersSub">Active in queue: 0</div>
-            </div>
-            <div class="kpi-card">
-                <div class="kpi-label">Lifetime Revenue</div>
-                <div class="kpi-val" id="kpiRevenue">₹0</div>
-                <div class="kpi-sub">Total sales booked</div>
-            </div>
-            <div class="kpi-card">
-                <div class="kpi-label">Customer Satisfaction</div>
-                <div class="kpi-val" id="kpiRating">5.0 ★</div>
-                <div class="kpi-sub" id="kpiRatingSub">Based on reviews</div>
-            </div>
-        </div>
-
-        <!-- Navigation Tabs -->
-        <div class="admin-tabs">
-            <button class="admin-tab active" data-tab="ordersTab">Orders &amp; Print Queue</button>
-            <button class="admin-tab" data-tab="customersTab">Customer Database &amp; History</button>
-            <button class="admin-tab" data-tab="feedbackTab">Customer Feedback</button>
-            <button class="admin-tab" data-tab="systemTab">Integrations &amp; Health</button>
-        </div>
-
-        <!-- TAB 1: ORDERS & PRINT QUEUE -->
-        <section class="tab-panel active" id="ordersTab">
-            <div class="table-toolbar">
-                <div class="search-group">
-                    <input type="text" id="orderSearch" class="form-input" placeholder="Search by Order # or Customer Phone...">
-                    <select id="orderStatusFilter" class="form-input" style="width: auto;">
-                        <option value="">All Statuses</option>
-                        <option value="ORDER_PLACED">Order Placed</option>
-                        <option value="IN_PRODUCTION">In Production (Printing)</option>
-                        <option value="QUALITY_CHECK">Quality Check</option>
-                        <option value="DISPATCHED">Dispatched / Shipped</option>
-                        <option value="DELIVERED">Delivered</option>
-                    </select>
-                </div>
-                <button class="btn btn--outline btn--sm" id="exportOrdersBtn">
-                    Download CSV
+            <div class="demo-cred-box">
+                <div style="font-weight:600; color:#FFFFFF;">Default Administrator Access:</div>
+                <div>Email: <code style="color:#FFFFFF;">admin@shupra3d.com</code></div>
+                <div>Password: <code style="color:#FFFFFF;">ShupraAdmin@2026</code></div>
+                <button type="button" id="fillDemoCredsBtn" class="btn btn--outline btn--sm" style="margin-top:0.25rem; font-size:0.72rem; padding:0.3rem;">
+                    Auto-Fill Credentials
                 </button>
-            </div>
-
-            <div class="data-table-wrapper">
-                <table class="data-table" id="ordersTable">
-                    <thead>
-                        <tr>
-                            <th>Order ID</th>
-                            <th>Date &amp; Time</th>
-                            <th>Customer</th>
-                            <th>Print Items &amp; Files</th>
-                            <th>Amount</th>
-                            <th>Payment</th>
-                            <th>Current Status</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody id="ordersTableBody">
-                        <tr>
-                            <td colspan="8" style="text-align:center; padding:2.5rem; color:var(--text-muted);">
-                                Loading orders from database...
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </section>
-
-        <!-- TAB 2: CUSTOMER DATABASE -->
-        <section class="tab-panel" id="customersTab">
-            <div class="table-toolbar">
-                <div class="search-group">
-                    <input type="text" id="custSearch" class="form-input" placeholder="Search customer by name, phone, or address...">
-                </div>
-                <button class="btn btn--outline btn--sm" id="exportCustomersBtn">
-                    Download Customer CSV
-                </button>
-            </div>
-
-            <div class="data-table-wrapper">
-                <table class="data-table" id="customersTable">
-                    <thead>
-                        <tr>
-                            <th>Customer Phone</th>
-                            <th>Name</th>
-                            <th>Shipping Address</th>
-                            <th>Total Orders</th>
-                            <th>Total Spent</th>
-                            <th>Registered</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody id="customersTableBody">
-                        <tr>
-                            <td colspan="7" style="text-align:center; padding:2.5rem; color:var(--text-muted);">
-                                Loading customers from database...
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </section>
-
-        <!-- TAB 3: CUSTOMER FEEDBACK -->
-        <section class="tab-panel" id="feedbackTab">
-            <div class="data-table-wrapper">
-                <table class="data-table" id="feedbackTable">
-                    <thead>
-                        <tr>
-                            <th>Date</th>
-                            <th>Customer</th>
-                            <th>Rating</th>
-                            <th>Category</th>
-                            <th>Comments</th>
-                        </tr>
-                    </thead>
-                    <tbody id="feedbackTableBody">
-                        <tr>
-                            <td colspan="5" style="text-align:center; padding:2.5rem; color:var(--text-muted);">
-                                Loading customer reviews...
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </section>
-
-        <!-- TAB 4: SYSTEM & HEALTH -->
-        <section class="tab-panel" id="systemTab">
-            <div class="kpi-grid">
-                <div class="kpi-card" style="grid-column: span 2;">
-                    <h3 style="font-size:1.1rem; margin-bottom:0.75rem;">Backend &amp; Database Architecture</h3>
-                    <div style="font-size:0.85rem; line-height:1.7; color:var(--text-secondary);">
-                        <div><strong>Active Mode:</strong> <span id="sysDbMode">PostgreSQL or Local Resilience</span></div>
-                        <div><strong>Database Status:</strong> <span id="sysDbStatus">Checking...</span></div>
-                        <div><strong>Server Latency:</strong> <span id="sysLatency">0ms</span></div>
-                        <div><strong>Node.js Engine:</strong> <span id="sysNode">v22.x</span></div>
-                        <div><strong>Server Uptime:</strong> <span id="sysUptime">0 seconds</span></div>
-                    </div>
-                </div>
-                <div class="kpi-card" style="grid-column: span 2;">
-                    <h3 style="font-size:1.1rem; margin-bottom:0.75rem;">Vercel Deployment Verification</h3>
-                    <p style="font-size:0.85rem; color:var(--text-secondary); line-height:1.6; margin-bottom:0.75rem;">
-                        This application is completely structured for 1-click deployment on Vercel. All API routes under <code>/api/*</code> run serverless.
-                    </p>
-                    <div style="background:var(--bg-primary); padding:0.75rem; border-radius:var(--r-sm); border:1px solid var(--border-subtle); font-family:var(--font-mono); font-size:0.75rem;">
-                        <div>POSTGRES_URL=postgres://... (Optional for cloud DB)</div>
-                        <div>PORT=3000 (Defaults to serverless port)</div>
-                    </div>
-                </div>
-            </div>
-        </section>
-    </main>
-
-    <!-- Customer History Modal (Admin view) -->
-    <div class="modal-overlay" id="adminCustModal">
-        <div class="modal-container modal-container--md">
-            <button class="modal-close" onclick="document.getElementById('adminCustModal').classList.remove('open')">✕</button>
-            <div class="modal-header">
-                <h3 id="adminCustModalTitle">Customer Purchase History</h3>
-                <p id="adminCustModalPhone">+91 ••••• ••••</p>
-            </div>
-            <div class="orders-history-list" id="adminCustOrdersList" style="max-height:400px; overflow-y:auto;">
-                <!-- Populated dynamically -->
             </div>
         </div>
     </div>
 
-    <!-- Admin JS Logic -->
+    <!-- ==================== 2. MAIN ADMIN DASHBOARD ==================== -->
+    <div id="adminDashboard" style="display:none;">
+        <!-- Header -->
+        <header class="admin-header">
+            <div class="admin-header-inner">
+                <div class="admin-title-area">
+                    <a href="index.html" class="nav__logo" style="margin-right:0.5rem;">
+                        <svg class="nav__logo-icon" width="24" height="24" viewBox="0 0 32 32" fill="none">
+                            <path d="M16 2L28 9V23L16 30L4 23V9L16 2Z" stroke="#F5D5E0" stroke-width="1.5" fill="rgba(123,51,126,0.3)"/>
+                            <path d="M16 2L28 9L16 16L4 9L16 2Z" fill="rgba(245,213,224,0.15)" stroke="#F5D5E0" stroke-width="1"/>
+                            <path d="M16 16V30" stroke="#F5D5E0" stroke-width="1" opacity="0.4"/>
+                        </svg>
+                        Shupra 3D
+                    </a>
+                    <span class="admin-badge-portal">Admin Control Center</span>
+                </div>
+
+                <div class="admin-actions">
+                    <div class="health-indicator" id="apiHealthBadge" title="Backend Health Status">
+                        <span class="health-dot"></span>
+                        <span id="apiHealthText">System: Checking...</span>
+                    </div>
+
+                    <div class="admin-user-pill">
+                        <span>👤</span>
+                        <span id="adminUserEmailDisplay">admin@shupra3d.com</span>
+                    </div>
+
+                    <button type="button" class="btn btn--outline btn--sm" id="adminRefreshBtn" style="padding:0.4rem 0.75rem;">
+                        ↻ Refresh
+                    </button>
+                    <a href="collection.html" target="_blank" class="btn btn--outline btn--sm" style="padding:0.4rem 0.75rem;">
+                        View Storefront ↗
+                    </a>
+                    <button type="button" class="btn btn--primary btn--sm" id="adminLogoutBtn" style="padding:0.4rem 0.75rem; background:rgba(239, 68, 68, 0.85); border-color:transparent;">
+                        Sign Out
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <main class="admin-container">
+            <!-- Overview KPIs -->
+            <div class="kpi-grid">
+                <div class="kpi-card">
+                    <div class="kpi-label">Active Catalog Products</div>
+                    <div class="kpi-val" id="kpiProducts">0</div>
+                    <div class="kpi-sub" id="kpiProductsSub">Live on storefront</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-label">Registered Customers</div>
+                    <div class="kpi-val" id="kpiCustomers">0</div>
+                    <div class="kpi-sub" id="kpiCustomersSub">Unique customer accounts</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-label">Total Print Orders</div>
+                    <div class="kpi-val" id="kpiOrders">0</div>
+                    <div class="kpi-sub" id="kpiOrdersSub">Active in queue: 0</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-label">Lifetime Revenue</div>
+                    <div class="kpi-val" id="kpiRevenue">₹0</div>
+                    <div class="kpi-sub">Total sales booked</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-label">Customer Satisfaction</div>
+                    <div class="kpi-val" id="kpiRating">5.0 ★</div>
+                    <div class="kpi-sub" id="kpiRatingSub">Verified customer reviews</div>
+                </div>
+            </div>
+
+            <!-- Navigation Tabs -->
+            <div class="admin-tabs">
+                <button class="admin-tab active" data-tab="productsTab">📦 Product Catalog &amp; Pricing</button>
+                <button class="admin-tab" data-tab="ordersTab">📑 Orders &amp; Print Queue</button>
+                <button class="admin-tab" data-tab="customersTab">👥 Customer Database &amp; History</button>
+                <button class="admin-tab" data-tab="feedbackTab">⭐ Customer Feedback</button>
+                <button class="admin-tab" data-tab="systemTab">⚡ Integrations &amp; Health</button>
+            </div>
+
+            <!-- ==================== TAB 1: PRODUCT CATALOG & PRICING ==================== -->
+            <section class="tab-panel active" id="productsTab">
+                <div class="table-toolbar">
+                    <div class="search-group">
+                        <input type="text" id="productSearch" class="form-control" placeholder="Search products by title, material, or keyword...">
+                        <select id="productCategoryFilter" class="form-control" style="width: auto;">
+                            <option value="">All Categories</option>
+                            <option value="idols">Sacred Idols</option>
+                            <option value="engineering">Engineering &amp; Functional</option>
+                            <option value="decor">Home &amp; Decor</option>
+                            <option value="miniatures">Miniatures &amp; Collectibles</option>
+                            <option value="prototypes">Rapid Prototypes</option>
+                        </select>
+                    </div>
+                    <button class="btn btn--primary btn--sm" id="openAddProductModalBtn" style="background:var(--admin-btn); padding:0.55rem 1.2rem; font-weight:600;">
+                        + Add New Product
+                    </button>
+                </div>
+
+                <div class="data-table-wrapper">
+                    <table class="data-table" id="productsTable">
+                        <thead>
+                            <tr>
+                                <th>Photo</th>
+                                <th>Product Details</th>
+                                <th>Category</th>
+                                <th>Material</th>
+                                <th>Current Price</th>
+                                <th>Stock</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="productsTableBody">
+                            <tr>
+                                <td colspan="7" style="text-align:center; padding:2.5rem; color:var(--admin-text-muted);">
+                                    Loading product catalog...
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- ==================== TAB 2: ORDERS & PRINT QUEUE ==================== -->
+            <section class="tab-panel" id="ordersTab">
+                <div class="table-toolbar">
+                    <div class="search-group">
+                        <input type="text" id="orderSearch" class="form-control" placeholder="Search by Order # or Customer Phone...">
+                        <select id="orderStatusFilter" class="form-control" style="width: auto;">
+                            <option value="">All Statuses</option>
+                            <option value="ORDER_PLACED">Order Placed</option>
+                            <option value="IN_PRODUCTION">In Production (Printing)</option>
+                            <option value="QUALITY_CHECK">Quality Check</option>
+                            <option value="DISPATCHED">Dispatched / Shipped</option>
+                            <option value="DELIVERED">Delivered</option>
+                        </select>
+                    </div>
+                    <button class="btn btn--outline btn--sm" id="exportOrdersBtn">
+                        Download Orders CSV
+                    </button>
+                </div>
+
+                <div class="data-table-wrapper">
+                    <table class="data-table" id="ordersTable">
+                        <thead>
+                            <tr>
+                                <th>Order ID</th>
+                                <th>Date &amp; Time</th>
+                                <th>Customer</th>
+                                <th>Print Items &amp; Files</th>
+                                <th>Amount</th>
+                                <th>Payment</th>
+                                <th>Current Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="ordersTableBody">
+                            <tr>
+                                <td colspan="8" style="text-align:center; padding:2.5rem; color:var(--admin-text-muted);">
+                                    Loading orders from database...
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- ==================== TAB 3: CUSTOMER DATABASE ==================== -->
+            <section class="tab-panel" id="customersTab">
+                <div class="table-toolbar">
+                    <div class="search-group">
+                        <input type="text" id="custSearch" class="form-control" placeholder="Search customer by name, phone, or address...">
+                    </div>
+                    <button class="btn btn--outline btn--sm" id="exportCustomersBtn">
+                        Download Customers CSV
+                    </button>
+                </div>
+
+                <div class="data-table-wrapper">
+                    <table class="data-table" id="customersTable">
+                        <thead>
+                            <tr>
+                                <th>Customer Phone</th>
+                                <th>Name</th>
+                                <th>Shipping Address</th>
+                                <th>Total Orders</th>
+                                <th>Total Spent</th>
+                                <th>Registered</th>
+                                <th>Customer History</th>
+                            </tr>
+                        </thead>
+                        <tbody id="customersTableBody">
+                            <tr>
+                                <td colspan="7" style="text-align:center; padding:2.5rem; color:var(--admin-text-muted);">
+                                    Loading customers from database...
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- ==================== TAB 4: CUSTOMER FEEDBACK ==================== -->
+            <section class="tab-panel" id="feedbackTab">
+                <div class="data-table-wrapper">
+                    <table class="data-table" id="feedbackTable">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Customer</th>
+                                <th>Rating</th>
+                                <th>Category</th>
+                                <th>Comments</th>
+                            </tr>
+                        </thead>
+                        <tbody id="feedbackTableBody">
+                            <tr>
+                                <td colspan="5" style="text-align:center; padding:2.5rem; color:var(--admin-text-muted);">
+                                    Loading customer reviews...
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- ==================== TAB 5: INTEGRATIONS & HEALTH ==================== -->
+            <section class="tab-panel" id="systemTab">
+                <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(320px, 1fr)); gap:1.5rem;">
+                    <div class="kpi-card">
+                        <h3 style="font-size:1.1rem; margin-bottom:1rem; color:#FFFFFF;">Database Connection</h3>
+                        <div style="font-family:var(--font-mono); font-size:0.85rem; line-height:1.8;">
+                            <div>Status: <span id="sysDbStatus" style="color:#10B981; font-weight:600;">Connected</span></div>
+                            <div>Storage Engine: <span id="sysDbEngine" style="color:var(--admin-text-sub);">Local File Persistence</span></div>
+                            <div>API Response Latency: <span id="sysDbLatency" style="color:var(--admin-text-sub);">12ms</span></div>
+                            <div>Environment: <span style="color:var(--admin-text-sub);">Vercel Serverless Ready</span></div>
+                        </div>
+                    </div>
+
+                    <div class="kpi-card">
+                        <h3 style="font-size:1.1rem; margin-bottom:1rem; color:#FFFFFF;">Live Production API Routes</h3>
+                        <div style="font-family:var(--font-mono); font-size:0.8rem; line-height:1.8; color:var(--admin-text-sub);">
+                            <div>✓ <code>GET /api/health</code> (Operational)</div>
+                            <div>✓ <code>POST /api/admin/login</code> (Secured)</div>
+                            <div>✓ <code>GET/POST/PUT /api/products</code> (Operational)</div>
+                            <div>✓ <code>POST /api/orders</code> (Orders Gateway)</div>
+                            <div>✓ <code>GET /api/customers</code> (Customer Records)</div>
+                            <div>✓ <code>POST /api/feedback</code> (Reviews Collector)</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- ==================== 3. ADD / EDIT PRODUCT MODAL ==================== -->
+    <div class="admin-modal-overlay" id="productModal">
+        <div class="admin-modal">
+            <div class="admin-modal-header">
+                <h3 class="admin-modal-title" id="productModalTitle">Add New Product to Catalog</h3>
+                <button type="button" class="admin-modal-close" id="closeProductModalBtn">✕</button>
+            </div>
+
+            <form id="productForm">
+                <input type="hidden" id="prodEditId" value="">
+
+                <div class="form-group" style="margin-bottom:1rem;">
+                    <label for="prodNameInput">Product Title *</label>
+                    <input type="text" id="prodNameInput" class="form-control" placeholder="e.g. Sacred Ganesha Sculpture" required>
+                </div>
+
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin-bottom:1rem;">
+                    <div class="form-group">
+                        <label for="prodCategorySelect">Category *</label>
+                        <select id="prodCategorySelect" class="form-control" required>
+                            <option value="idols">Sacred Idols</option>
+                            <option value="engineering">Engineering &amp; Functional</option>
+                            <option value="decor">Home &amp; Decor</option>
+                            <option value="miniatures">Miniatures &amp; Collectibles</option>
+                            <option value="prototypes">Rapid Prototypes</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="prodBadgeSelect">Badge Tag</label>
+                        <select id="prodBadgeSelect" class="form-control">
+                            <option value="">None</option>
+                            <option value="Bestseller">Bestseller</option>
+                            <option value="New Release">New Release</option>
+                            <option value="Popular">Popular</option>
+                            <option value="Limited Edition">Limited Edition</option>
+                            <option value="Custom Order">Custom Order</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin-bottom:1rem;">
+                    <div class="form-group">
+                        <label for="prodPriceInput">Selling Price (₹) *</label>
+                        <input type="number" id="prodPriceInput" class="form-control" placeholder="1169" min="1" step="1" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="prodOriginalPriceInput">Original MRP (₹)</label>
+                        <input type="number" id="prodOriginalPriceInput" class="form-control" placeholder="1499" min="1" step="1">
+                    </div>
+                </div>
+
+                <div class="form-group" style="margin-bottom:1rem;">
+                    <label for="prodMaterialInput">Material / Finish</label>
+                    <input type="text" id="prodMaterialInput" class="form-control" placeholder="e.g. Tough Resin / Marble Silk PLA+">
+                </div>
+
+                <!-- Photo Upload & URL -->
+                <div class="form-group" style="margin-bottom:1rem;">
+                    <label>Product Photo *</label>
+                    <div style="display:flex; flex-direction:column; gap:0.6rem;">
+                        <input type="file" id="prodFileInput" accept="image/*" class="form-control" style="padding:0.45rem;">
+                        <div style="font-size:0.75rem; color:var(--admin-text-muted); text-align:center;">— OR PASTE IMAGE URL —</div>
+                        <input type="text" id="prodImageUrlInput" class="form-control" placeholder="assets/hero_render.png or https://images.unsplash.com/..." value="assets/hero_render.png">
+                    </div>
+
+                    <div class="preview-box" id="productPreviewBox">
+                        <img id="productImagePreview" src="assets/hero_render.png" alt="Preview" onerror="this.style.display='none'; document.getElementById('previewFallback').style.display='block';">
+                        <div id="previewFallback" class="preview-placeholder" style="display:none;">Photo Preview Area</div>
+                    </div>
+                </div>
+
+                <div class="form-group" style="margin-bottom:1.25rem;">
+                    <label for="prodDescInput">Product Description</label>
+                    <textarea id="prodDescInput" class="form-control" rows="3" placeholder="Provide full details, precision tolerances, dimensions, and display features..."></textarea>
+                </div>
+
+                <div style="display:flex; align-items:center; gap:0.5rem; margin-bottom:1.5rem;">
+                    <input type="checkbox" id="prodInStockCheck" checked style="width:18px; height:18px; accent-color:var(--admin-btn);">
+                    <label for="prodInStockCheck" style="font-size:0.85rem; color:#FFFFFF; margin-bottom:0; cursor:pointer;">
+                        Item is In Stock &amp; Available for Order
+                    </label>
+                </div>
+
+                <div style="display:flex; justify-content:flex-end; gap:0.75rem;">
+                    <button type="button" class="btn btn--outline" id="cancelProductBtn">Cancel</button>
+                    <button type="submit" class="btn btn--primary" id="saveProductBtn" style="background:var(--admin-btn);">
+                        Save Product to Catalog
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ==================== 4. CUSTOMER HISTORY MODAL ==================== -->
+    <div class="admin-modal-overlay" id="adminCustModal">
+        <div class="admin-modal" style="max-width:720px;">
+            <div class="admin-modal-header">
+                <div>
+                    <h3 class="admin-modal-title" id="adminCustModalTitle">Customer Purchase History</h3>
+                    <div style="font-family:var(--font-mono); font-size:0.8rem; color:var(--admin-text-sub);" id="adminCustModalPhone">+91 —</div>
+                </div>
+                <button type="button" class="admin-modal-close" onclick="closeCustModal()">✕</button>
+            </div>
+            <div id="adminCustOrdersList" style="max-height:60vh; overflow-y:auto; padding-right:0.5rem;">
+                <div style="text-align:center; padding:2rem; color:var(--admin-text-muted);">Loading customer history...</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== JAVASCRIPT ==================== -->
     <script>
+        // State
+        let adminToken = sessionStorage.getItem('shupra_admin_token') || localStorage.getItem('shupra_admin_token') || null;
         let allOrders = [];
         let allCustomers = [];
+        let allProducts = [];
         let allFeedback = [];
 
-        // Tab Switching
-        document.querySelectorAll('.admin-tab').forEach(tab => {
-            tab.addEventListener('click', () => {
-                document.querySelectorAll('.admin-tab').forEach(t => t.classList.remove('active'));
+        const adminAuthGate = document.getElementById('adminAuthGate');
+        const adminDashboard = document.getElementById('adminDashboard');
+        const authErrorMsg = document.getElementById('authErrorMsg');
+
+        // Check Initial Auth
+        if (adminToken) {
+            showDashboard();
+        } else {
+            showLogin();
+        }
+
+        function showLogin() {
+            adminAuthGate.style.display = 'flex';
+            adminDashboard.style.display = 'none';
+        }
+
+        function showDashboard() {
+            adminAuthGate.style.display = 'none';
+            adminDashboard.style.display = 'block';
+            checkHealth();
+            loadAdminData();
+        }
+
+        // Auto-fill Demo Credentials button
+        document.getElementById('fillDemoCredsBtn').addEventListener('click', () => {
+            document.getElementById('adminEmailInput').value = 'admin@shupra3d.com';
+            document.getElementById('adminPasswordInput').value = 'ShupraAdmin@2026';
+        });
+
+        // Admin Login Form Submit
+        document.getElementById('adminLoginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('adminEmailInput').value.trim();
+            const password = document.getElementById('adminPasswordInput').value;
+            const submitBtn = document.getElementById('adminLoginSubmitBtn');
+
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Authenticating...';
+            authErrorMsg.style.display = 'none';
+
+            try {
+                const res = await fetch('/api/admin/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password })
+                });
+
+                const data = await res.json();
+                if (res.ok && data.token) {
+                    adminToken = data.token;
+                    sessionStorage.setItem('shupra_admin_token', adminToken);
+                    localStorage.setItem('shupra_admin_token', adminToken);
+                    document.getElementById('adminUserEmailDisplay').textContent = data.admin.email;
+                    showDashboard();
+                } else {
+                    authErrorMsg.textContent = data.error || 'Authentication failed. Please check credentials.';
+                    authErrorMsg.style.display = 'block';
+                }
+            } catch (err) {
+                authErrorMsg.textContent = 'Server connection error. Make sure the backend is active.';
+                authErrorMsg.style.display = 'block';
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Sign In to Admin Portal →';
+            }
+        });
+
+        // Logout
+        document.getElementById('adminLogoutBtn').addEventListener('click', () => {
+            adminToken = null;
+            sessionStorage.removeItem('shupra_admin_token');
+            localStorage.removeItem('shupra_admin_token');
+            showLogin();
+        });
+
+        // Tab Navigation
+        document.querySelectorAll('.admin-tab').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.admin-tab').forEach(b => b.classList.remove('active'));
                 document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
-                tab.classList.add('active');
-                const target = document.getElementById(tab.getAttribute('data-tab'));
-                if (target) target.classList.add('active');
+                btn.classList.add('active');
+                const targetId = btn.getAttribute('data-tab');
+                const panel = document.getElementById(targetId);
+                if (panel) panel.classList.add('active');
             });
         });
 
-        // Fetch System Health
+        // Health Check
         async function checkHealth() {
+            const badge = document.getElementById('apiHealthBadge');
+            const text = document.getElementById('apiHealthText');
             try {
                 const res = await fetch('/api/health');
                 const data = await res.json();
-                const badge = document.getElementById('apiHealthBadge');
-                const text = document.getElementById('apiHealthText');
-
-                if (data.status === 'ok') {
-                    badge.className = 'health-indicator';
-                    text.textContent = `Online • ${data.database.mode} (${data.database.latencyMs}ms)`;
-                    document.getElementById('sysDbMode').textContent = data.database.mode;
-                    document.getElementById('sysDbStatus').textContent = data.database.database;
-                    document.getElementById('sysLatency').textContent = `${data.database.latencyMs}ms`;
-                    document.getElementById('sysNode').textContent = data.nodeVersion;
-                    document.getElementById('sysUptime').textContent = `${Math.floor(data.uptime)} seconds`;
+                if (res.ok && data.status === 'ok') {
+                    badge.classList.remove('degraded');
+                    text.textContent = `System: Healthy (${data.database.mode})`;
+                    document.getElementById('sysDbStatus').textContent = 'Connected & Operational';
+                    document.getElementById('sysDbEngine').textContent = data.database.mode;
+                    document.getElementById('sysDbLatency').textContent = `${data.database.latencyMs}ms`;
                 } else {
-                    badge.className = 'health-indicator degraded';
-                    text.textContent = 'Degraded';
+                    badge.classList.add('degraded');
+                    text.textContent = 'System: Degraded';
                 }
-            } catch (err) {
-                const badge = document.getElementById('apiHealthBadge');
-                const text = document.getElementById('apiHealthText');
-                badge.className = 'health-indicator degraded';
-                text.textContent = 'Offline / Connecting';
+            } catch (e) {
+                badge.classList.add('degraded');
+                text.textContent = 'System: Offline';
             }
         }
 
-        // Fetch Overview & Tab Data
+        // Load Admin Data
         async function loadAdminData() {
             try {
-                const res = await fetch('/api/admin');
-                const data = await res.json();
+                const res = await fetch('/api/admin', {
+                    headers: {
+                        'Authorization': `Bearer ${adminToken}`
+                    }
+                });
 
+                if (res.status === 401) {
+                    adminToken = null;
+                    sessionStorage.removeItem('shupra_admin_token');
+                    localStorage.removeItem('shupra_admin_token');
+                    showLogin();
+                    return;
+                }
+
+                const data = await res.json();
                 allOrders = data.orders || [];
                 allCustomers = data.customers || [];
                 allFeedback = data.feedback || [];
+                allProducts = data.products || [];
 
-                // Render KPIs
+                // Update KPIs
                 if (data.stats) {
+                    document.getElementById('kpiProducts').textContent = allProducts.length;
                     document.getElementById('kpiCustomers').textContent = data.stats.totalCustomers || allCustomers.length;
                     document.getElementById('kpiOrders').textContent = data.stats.totalOrders || allOrders.length;
                     document.getElementById('kpiOrdersSub').textContent = `Active in queue: ${data.stats.activeOrders || 0}`;
-                    document.getElementById('kpiRevenue').textContent = `₹${(data.stats.totalRevenue || 0).toLocaleString('en-IN')}`;
+                    document.getElementById('kpiRevenue').textContent = `₹${Number(data.stats.totalRevenue || 0).toLocaleString('en-IN')}`;
                     document.getElementById('kpiRating').textContent = `${data.stats.averageRating || '5.0'} ★`;
-                    document.getElementById('kpiRatingSub').textContent = `Based on ${data.stats.totalFeedback || 0} reviews`;
                 }
 
+                renderProductsTable();
                 renderOrdersTable();
                 renderCustomersTable();
                 renderFeedbackTable();
             } catch (err) {
-                console.error('Error loading admin data:', err);
+                console.error('[Admin] Error loading data:', err);
             }
         }
 
-        // Render Orders Table
-        function renderOrdersTable() {
-            const tbody = document.getElementById('ordersTableBody');
-            const searchVal = document.getElementById('orderSearch').value.toLowerCase().trim();
-            const statusFilter = document.getElementById('orderStatusFilter').value;
+        // ==================== PRODUCT CATALOG & PRICING ====================
 
-            let filtered = allOrders.filter(o => {
-                const matchSearch = !searchVal || 
-                    o.order_number.toLowerCase().includes(searchVal) ||
-                    (o.customer_phone && o.customer_phone.includes(searchVal)) ||
-                    (o.customer_name && o.customer_name.toLowerCase().includes(searchVal));
-                const matchStatus = !statusFilter || o.order_status === statusFilter;
-                return matchSearch && matchStatus;
+        function renderProductsTable() {
+            const tbody = document.getElementById('productsTableBody');
+            const searchVal = document.getElementById('productSearch').value.toLowerCase().trim();
+            const catVal = document.getElementById('productCategoryFilter').value;
+
+            let filtered = allProducts.filter(p => {
+                const matchesSearch = !searchVal || 
+                    (p.name && p.name.toLowerCase().includes(searchVal)) ||
+                    (p.material && p.material.toLowerCase().includes(searchVal)) ||
+                    (p.description && p.description.toLowerCase().includes(searchVal));
+                const matchesCat = !catVal || p.category === catVal;
+                return matchesSearch && matchesCat;
             });
 
             if (filtered.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="8" style="text-align:center; padding:2rem; color:var(--text-muted);">No matching orders found.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; padding:2rem; color:var(--admin-text-muted);">No products found matching filters.</td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = filtered.map(p => {
+                const imgSrc = p.image_url || 'assets/hero_render.png';
+                const originalPriceHtml = p.original_price ? `<span style="text-decoration:line-through; font-size:0.75rem; color:var(--admin-text-muted); margin-left:0.35rem;">₹${Number(p.original_price).toLocaleString('en-IN')}</span>` : '';
+                const stockBadge = p.in_stock 
+                    ? `<span class="stock-badge in-stock">● In Stock</span>` 
+                    : `<span class="stock-badge out-stock">○ Sold Out</span>`;
+                const badgeTag = p.badge ? `<div class="badge-pill">${p.badge}</div>` : '';
+
+                return `
+                    <tr>
+                        <td>
+                            <img src="${imgSrc}" class="prod-thumb" alt="${p.name}" onerror="this.src='assets/hero_render.png'">
+                        </td>
+                        <td style="max-width:260px;">
+                            <strong style="color:#FFFFFF; font-size:0.92rem;">${p.name}</strong>
+                            ${badgeTag}
+                            <div style="font-size:0.75rem; color:var(--admin-text-muted); margin-top:0.25rem; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;">
+                                ${p.description || 'Precision 3D printed model.'}
+                            </div>
+                        </td>
+                        <td><span style="font-family:var(--font-mono); font-size:0.78rem;">${p.category_name || p.category}</span></td>
+                        <td style="font-size:0.8rem;">${p.material || 'Tough Resin'}</td>
+                        <td>
+                            <strong style="color:#FFFFFF; font-size:1.05rem;">₹${Number(p.price).toLocaleString('en-IN')}</strong>
+                            ${originalPriceHtml}
+                        </td>
+                        <td>${stockBadge}</td>
+                        <td>
+                            <div style="display:flex; gap:0.4rem;">
+                                <button class="btn btn--outline btn--sm" style="font-size:0.75rem; padding:0.3rem 0.6rem;" onclick="openEditProductModal('${p.id}')">
+                                    ✏️ Edit
+                                </button>
+                                <button class="btn btn--outline btn--sm" style="font-size:0.75rem; padding:0.3rem 0.5rem; color:#EF4444; border-color:rgba(239,68,68,0.3);" onclick="deleteProductConfirm('${p.id}', '${p.name.replace(/'/g, "\\'")}')">
+                                    🗑️
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        // Live Photo Preview Listeners
+        const prodFileInput = document.getElementById('prodFileInput');
+        const prodImageUrlInput = document.getElementById('prodImageUrlInput');
+        const productImagePreview = document.getElementById('productImagePreview');
+        const previewFallback = document.getElementById('previewFallback');
+
+        function updateImagePreview(src) {
+            if (!src) {
+                productImagePreview.style.display = 'none';
+                previewFallback.style.display = 'block';
+                return;
+            }
+            productImagePreview.src = src;
+            productImagePreview.style.display = 'block';
+            previewFallback.style.display = 'none';
+        }
+
+        prodImageUrlInput.addEventListener('input', () => {
+            updateImagePreview(prodImageUrlInput.value.trim());
+        });
+
+        prodFileInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    const base64 = event.target.result;
+                    prodImageUrlInput.value = base64;
+                    updateImagePreview(base64);
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // Open Add Product Modal
+        document.getElementById('openAddProductModalBtn').addEventListener('click', () => {
+            document.getElementById('productModalTitle').textContent = 'Add New Product to Catalog';
+            document.getElementById('prodEditId').value = '';
+            document.getElementById('productForm').reset();
+            document.getElementById('prodImageUrlInput').value = 'assets/hero_render.png';
+            document.getElementById('prodInStockCheck').checked = true;
+            updateImagePreview('assets/hero_render.png');
+            document.getElementById('productModal').classList.add('open');
+        });
+
+        // Open Edit Product Modal
+        window.openEditProductModal = function(id) {
+            const product = allProducts.find(p => p.id === id);
+            if (!product) return;
+
+            document.getElementById('productModalTitle').textContent = `Edit: ${product.name}`;
+            document.getElementById('prodEditId').value = product.id;
+            document.getElementById('prodNameInput').value = product.name;
+            document.getElementById('prodCategorySelect').value = product.category || 'decor';
+            document.getElementById('prodBadgeSelect').value = product.badge || '';
+            document.getElementById('prodPriceInput').value = product.price;
+            document.getElementById('prodOriginalPriceInput').value = product.original_price || '';
+            document.getElementById('prodMaterialInput').value = product.material || '';
+            document.getElementById('prodDescInput').value = product.description || '';
+            document.getElementById('prodImageUrlInput').value = product.image_url || 'assets/hero_render.png';
+            document.getElementById('prodInStockCheck').checked = product.in_stock !== false;
+            updateImagePreview(product.image_url || 'assets/hero_render.png');
+
+            document.getElementById('productModal').classList.add('open');
+        };
+
+        // Close Product Modal
+        function closeProductModal() {
+            document.getElementById('productModal').classList.remove('open');
+        }
+        document.getElementById('closeProductModalBtn').addEventListener('click', closeProductModal);
+        document.getElementById('cancelProductBtn').addEventListener('click', closeProductModal);
+
+        // Save Product (Create or Update)
+        document.getElementById('productForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const editId = document.getElementById('prodEditId').value;
+            const saveBtn = document.getElementById('saveProductBtn');
+
+            const payload = {
+                name: document.getElementById('prodNameInput').value.trim(),
+                category: document.getElementById('prodCategorySelect').value,
+                badge: document.getElementById('prodBadgeSelect').value,
+                price: parseFloat(document.getElementById('prodPriceInput').value),
+                original_price: document.getElementById('prodOriginalPriceInput').value ? parseFloat(document.getElementById('prodOriginalPriceInput').value) : null,
+                material: document.getElementById('prodMaterialInput').value.trim(),
+                description: document.getElementById('prodDescInput').value.trim(),
+                image_url: document.getElementById('prodImageUrlInput').value.trim() || 'assets/hero_render.png',
+                in_stock: document.getElementById('prodInStockCheck').checked
+            };
+
+            saveBtn.disabled = true;
+            saveBtn.textContent = 'Saving...';
+
+            try {
+                const method = editId ? 'PUT' : 'POST';
+                if (editId) payload.id = editId;
+
+                const res = await fetch('/api/products', {
+                    method,
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${adminToken}`
+                    },
+                    body: JSON.stringify(payload)
+                });
+
+                const data = await res.json();
+                if (res.ok) {
+                    closeProductModal();
+                    await loadAdminData();
+                } else {
+                    alert('Error saving product: ' + (data.error || 'Server rejected update'));
+                }
+            } catch (err) {
+                alert('Connection error saving product.');
+            } finally {
+                saveBtn.disabled = false;
+                saveBtn.textContent = 'Save Product to Catalog';
+            }
+        });
+
+        // Delete Product
+        window.deleteProductConfirm = async function(id, name) {
+            if (!confirm(`Are you sure you want to delete "${name}" from the catalog? This cannot be undone.`)) {
+                return;
+            }
+
+            try {
+                const res = await fetch(`/api/products?id=${id}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Authorization': `Bearer ${adminToken}`
+                    }
+                });
+
+                if (res.ok) {
+                    await loadAdminData();
+                } else {
+                    const data = await res.json();
+                    alert('Error deleting: ' + (data.error || 'Failed'));
+                }
+            } catch (err) {
+                alert('Error connecting to delete product.');
+            }
+        };
+
+        // ==================== ORDERS & PRINT QUEUE ====================
+
+        function renderOrdersTable() {
+            const tbody = document.getElementById('ordersTableBody');
+            const searchVal = document.getElementById('orderSearch').value.toLowerCase().trim();
+            const statusVal = document.getElementById('orderStatusFilter').value;
+
+            let filtered = allOrders.filter(o => {
+                const matchesSearch = !searchVal ||
+                    (o.order_number && o.order_number.toLowerCase().includes(searchVal)) ||
+                    (o.customer_phone && o.customer_phone.includes(searchVal)) ||
+                    (o.customer_name && o.customer_name.toLowerCase().includes(searchVal));
+                const matchesStatus = !statusVal || o.order_status === statusVal;
+                return matchesSearch && matchesStatus;
+            });
+
+            if (filtered.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="8" style="text-align:center; padding:2rem; color:var(--admin-text-muted);">No orders found.</td></tr>`;
                 return;
             }
 
@@ -524,16 +1328,16 @@
                 });
                 return `
                     <tr>
-                        <td><strong style="color:var(--text-primary); font-family:var(--font-mono);">${o.order_number}</strong></td>
+                        <td><strong style="color:#FFFFFF; font-family:var(--font-mono);">${o.order_number}</strong></td>
                         <td style="font-size:0.75rem; white-space:nowrap;">${dateStr}</td>
                         <td>
-                            <strong style="color:var(--text-primary);">${o.customer_name || 'Customer'}</strong>
-                            <div style="font-family:var(--font-mono); font-size:0.75rem; color:var(--text-muted);">+91 ${o.customer_phone}</div>
+                            <strong style="color:#FFFFFF;">${o.customer_name || 'Customer'}</strong>
+                            <div style="font-family:var(--font-mono); font-size:0.75rem; color:var(--admin-text-muted);">+91 ${o.customer_phone}</div>
                         </td>
                         <td style="max-width:280px;">
                             <div>${o.file_names || 'Standard Model'}</div>
                         </td>
-                        <td><strong style="color:var(--text-primary);">₹${Number(o.total_amount).toLocaleString('en-IN')}</strong></td>
+                        <td><strong style="color:#FFFFFF;">₹${Number(o.total_amount).toLocaleString('en-IN')}</strong></td>
                         <td style="font-size:0.75rem;">${o.payment_method || 'Online'}</td>
                         <td>
                             <select class="status-select" onchange="updateStatus('${o.order_number}', this.value)">
@@ -555,7 +1359,29 @@
             }).join('');
         }
 
-        // Render Customers Table
+        // Update Order Status
+        window.updateStatus = async function(orderNumber, newStatus) {
+            try {
+                const res = await fetch('/api/orders', {
+                    method: 'PATCH',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${adminToken}`
+                    },
+                    body: JSON.stringify({ orderNumber, status: newStatus })
+                });
+                if (res.ok) {
+                    await loadAdminData();
+                } else {
+                    alert('Failed to update order status');
+                }
+            } catch (err) {
+                console.error(err);
+            }
+        };
+
+        // ==================== CUSTOMER DATABASE ====================
+
         function renderCustomersTable() {
             const tbody = document.getElementById('customersTableBody');
             const searchVal = document.getElementById('custSearch').value.toLowerCase().trim();
@@ -568,7 +1394,7 @@
             });
 
             if (filtered.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; padding:2rem; color:var(--text-muted);">No customers found.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; padding:2rem; color:var(--admin-text-muted);">No customers found.</td></tr>`;
                 return;
             }
 
@@ -578,15 +1404,15 @@
                 });
                 return `
                     <tr>
-                        <td><strong style="color:var(--text-primary); font-family:var(--font-mono);">+91 ${c.phone}</strong></td>
+                        <td><strong style="color:#FFFFFF; font-family:var(--font-mono);">+91 ${c.phone}</strong></td>
                         <td>${c.name || 'Valued Customer'}</td>
-                        <td style="max-width:240px; font-size:0.78rem;">${c.address || '—'}</td>
-                        <td><strong style="color:var(--text-primary);">${c.total_orders || 0}</strong></td>
-                        <td><strong style="color:var(--text-primary);">₹${Number(c.total_spent || 0).toLocaleString('en-IN')}</strong></td>
+                        <td style="max-width:260px; font-size:0.78rem;">${c.address || '—'}</td>
+                        <td><strong style="color:#FFFFFF;">${c.total_orders || 0}</strong></td>
+                        <td><strong style="color:#FFFFFF;">₹${Number(c.total_spent || 0).toLocaleString('en-IN')}</strong></td>
                         <td style="font-size:0.75rem;">${regDate}</td>
                         <td>
-                            <button class="btn btn--outline btn--sm" style="font-size:0.72rem; padding:0.25rem 0.5rem;" onclick="viewCustomerHistory('${c.phone}')">
-                                View Purchases
+                            <button class="btn btn--outline btn--sm" style="font-size:0.72rem; padding:0.25rem 0.6rem;" onclick="viewCustomerHistory('${c.phone}')">
+                                View Purchases (${c.total_orders || 0})
                             </button>
                         </td>
                     </tr>
@@ -594,11 +1420,64 @@
             }).join('');
         }
 
-        // Render Feedback Table
+        // View Single Customer History Modal
+        window.viewCustomerHistory = async function(phone) {
+            const modal = document.getElementById('adminCustModal');
+            const title = document.getElementById('adminCustModalTitle');
+            const phoneEl = document.getElementById('adminCustModalPhone');
+            const listEl = document.getElementById('adminCustOrdersList');
+
+            phoneEl.textContent = `+91 ${phone}`;
+            listEl.innerHTML = '<div style="text-align:center; padding:2rem; color:var(--admin-text-muted);">Loading customer purchase history...</div>';
+            modal.classList.add('open');
+
+            try {
+                const res = await fetch(`/api/customers?phone=${phone}`);
+                const data = await res.json();
+
+                if (data.customer) {
+                    title.textContent = `${data.customer.name || 'Customer'} — History (${data.orders ? data.orders.length : 0} orders)`;
+                }
+
+                if (!data.orders || data.orders.length === 0) {
+                    listEl.innerHTML = '<div style="text-align:center; padding:2rem; color:var(--admin-text-muted);">No orders found for this customer.</div>';
+                    return;
+                }
+
+                listEl.innerHTML = data.orders.map(o => `
+                    <div style="background:rgba(255,255,255,0.04); border:1px solid var(--admin-border); border-radius:var(--r-md); padding:1rem; margin-bottom:0.75rem;">
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.5rem;">
+                            <span style="font-family:var(--font-mono); font-weight:700; color:#FFFFFF;">${o.order_number}</span>
+                            <span class="status-badge ${o.order_status}" style="font-size:0.72rem; padding:0.2rem 0.5rem; border-radius:4px; background:rgba(123,51,126,0.3); color:#F5D5E0;">
+                                ${o.order_status}
+                            </span>
+                        </div>
+                        <div style="font-size:0.82rem; line-height:1.6; color:var(--admin-text-muted);">
+                            <div><strong>Items / Files:</strong> ${o.file_names || 'Standard 3D Print'}</div>
+                            <div><strong>Total Amount:</strong> ₹${Number(o.total_amount).toLocaleString('en-IN')} via ${o.payment_method || 'Online'}</div>
+                            <div><strong>Shipping Address:</strong> ${o.customer_address || 'Standard Address'}</div>
+                            ${o.tracking_number ? `<div><strong>AWB Tracking:</strong> ${o.tracking_number}</div>` : ''}
+                        </div>
+                        <div style="font-size:0.72rem; color:var(--admin-text-sub); margin-top:0.5rem; text-align:right;">
+                            Placed on ${new Date(o.created_at).toLocaleString('en-IN')}
+                        </div>
+                    </div>
+                `).join('');
+            } catch (err) {
+                listEl.innerHTML = '<div style="color:#EF4444; text-align:center; padding:2rem;">Failed to load history.</div>';
+            }
+        };
+
+        window.closeCustModal = function() {
+            document.getElementById('adminCustModal').classList.remove('open');
+        };
+
+        // ==================== FEEDBACK ====================
+
         function renderFeedbackTable() {
             const tbody = document.getElementById('feedbackTableBody');
             if (allFeedback.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; padding:2rem; color:var(--text-muted);">No feedback submitted yet.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; padding:2rem; color:var(--admin-text-muted);">No feedback submitted yet.</td></tr>`;
                 return;
             }
 
@@ -609,78 +1488,18 @@
                 return `
                     <tr>
                         <td style="font-size:0.75rem;">${dateStr}</td>
-                        <td style="font-family:var(--font-mono);">+91 ${f.customer_phone}</td>
+                        <td style="font-family:var(--font-mono); color:#FFFFFF;">+91 ${f.customer_phone}</td>
                         <td><strong style="color:#F59E0B;">${'★'.repeat(f.rating)}</strong> (${f.rating}/5)</td>
                         <td>${f.category || 'General'}</td>
-                        <td style="color:var(--text-primary);">"${f.comments}"</td>
+                        <td style="color:#FFFFFF;">"${f.comments}"</td>
                     </tr>
                 `;
             }).join('');
         }
 
-        // Update Order Status
-        async function updateStatus(orderNumber, newStatus) {
-            try {
-                const res = await fetch('/api/orders', {
-                    method: 'PATCH',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ orderNumber, status: newStatus })
-                });
-                if (res.ok) {
-                    await loadAdminData();
-                } else {
-                    alert('Failed to update status');
-                }
-            } catch (err) {
-                console.error(err);
-            }
-        }
-
-        // View Single Customer History Modal
-        async function viewCustomerHistory(phone) {
-            const modal = document.getElementById('adminCustModal');
-            const title = document.getElementById('adminCustModalTitle');
-            const phoneEl = document.getElementById('adminCustModalPhone');
-            const listEl = document.getElementById('adminCustOrdersList');
-
-            phoneEl.textContent = `+91 ${phone}`;
-            listEl.innerHTML = '<div style="text-align:center; padding:2rem;">Loading customer purchase history...</div>';
-            modal.classList.add('open');
-
-            try {
-                const res = await fetch(`/api/customers?phone=${phone}`);
-                const data = await res.json();
-
-                if (data.customer) {
-                    title.textContent = `${data.customer.name || 'Customer'} — History (${data.orders.length} orders)`;
-                }
-
-                if (!data.orders || data.orders.length === 0) {
-                    listEl.innerHTML = '<div style="text-align:center; padding:2rem; color:var(--text-muted);">No orders found for this customer.</div>';
-                    return;
-                }
-
-                listEl.innerHTML = data.orders.map(o => `
-                    <div class="order-card" style="margin-bottom:0.75rem;">
-                        <div class="order-card__header">
-                            <span class="order-card__id">${o.order_number}</span>
-                            <span class="order-status-badge ${o.order_status}">${o.order_status}</span>
-                        </div>
-                        <div class="order-card__items">
-                            <div><strong>Files:</strong> ${o.file_names || 'Standard'}</div>
-                            <div><strong>Total:</strong> ₹${Number(o.total_amount).toLocaleString('en-IN')} via ${o.payment_method}</div>
-                        </div>
-                        <div class="order-card__footer">
-                            <span style="font-size:0.75rem; color:var(--text-muted);">${new Date(o.created_at).toLocaleString('en-IN')}</span>
-                        </div>
-                    </div>
-                `).join('');
-            } catch (err) {
-                listEl.innerHTML = '<div style="color:var(--color-danger); text-align:center; padding:2rem;">Failed to load history.</div>';
-            }
-        }
-
-        // Event listeners for filters
+        // Filter event listeners
+        document.getElementById('productSearch').addEventListener('input', renderProductsTable);
+        document.getElementById('productCategoryFilter').addEventListener('change', renderProductsTable);
         document.getElementById('orderSearch').addEventListener('input', renderOrdersTable);
         document.getElementById('orderStatusFilter').addEventListener('change', renderOrdersTable);
         document.getElementById('custSearch').addEventListener('input', renderCustomersTable);
@@ -689,10 +1508,8 @@
             loadAdminData();
         });
 
-        // Initialize
-        checkHealth();
-        loadAdminData();
-        setInterval(checkHealth, 30000); // Check health every 30s
+        // Periodic Health Check
+        setInterval(checkHealth, 30000);
     </script>
 </body>
 </html>

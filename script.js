@@ -949,6 +949,149 @@ function initCollectionControls() {
     });
 
     updateShop();
+
+    // Dynamically synchronize products created or edited by the Admin in /api/products
+    syncDynamicProducts(shopGrid, () => {
+        // Re-query cards in case new cards were prepended
+        const updatedCards = Array.from(shopGrid.querySelectorAll('.gallery__card'));
+        cards.length = 0;
+        cards.push(...updatedCards);
+        updateShop();
+    });
+}
+
+async function syncDynamicProducts(shopGrid, onUpdate) {
+    try {
+        const res = await fetch('/api/products');
+        if (!res.ok) return;
+        const data = await res.json();
+        const apiProducts = data.products || [];
+        if (!apiProducts.length) return;
+
+        apiProducts.forEach(prod => {
+            const existingCard = Array.from(shopGrid.querySelectorAll('.gallery__card')).find(card => {
+                const name = (card.getAttribute('data-name') || '').toLowerCase().trim();
+                const btn = card.querySelector('.gallery__add-cart');
+                const btnId = btn ? btn.getAttribute('data-id') : null;
+                return (btnId && btnId === prod.id) || (name && name === prod.name.toLowerCase().trim());
+            });
+
+            if (existingCard) {
+                existingCard.setAttribute('data-price', prod.price);
+                const priceEl = existingCard.querySelector('.gallery__card-price');
+                if (priceEl) priceEl.textContent = `₹${Number(prod.price).toLocaleString('en-IN')}`;
+
+                const origPriceEl = existingCard.querySelector('.gallery__card-original');
+                if (origPriceEl) {
+                    origPriceEl.textContent = prod.original_price ? `₹${Number(prod.original_price).toLocaleString('en-IN')}` : '';
+                }
+
+                const matEl = existingCard.querySelector('.gallery__card-material');
+                if (matEl && prod.material) matEl.textContent = prod.material;
+
+                const addBtn = existingCard.querySelector('.gallery__add-cart');
+                if (addBtn) addBtn.setAttribute('data-price', prod.price);
+
+                if (prod.image_url && prod.image_url !== 'assets/hero_render.png') {
+                    const imgContainer = existingCard.querySelector('.gallery__card-image');
+                    const existingImg = existingCard.querySelector('img.gallery__card-img');
+                    if (existingImg) {
+                        existingImg.src = prod.image_url;
+                    } else if (imgContainer) {
+                        const newImg = document.createElement('img');
+                        newImg.src = prod.image_url;
+                        newImg.className = 'gallery__card-img';
+                        newImg.alt = prod.name;
+                        newImg.style.width = '100%';
+                        newImg.style.height = '100%';
+                        newImg.style.objectFit = 'cover';
+                        const placeholder = imgContainer.querySelector('.gallery__card-placeholder');
+                        if (placeholder) placeholder.style.display = 'none';
+                        imgContainer.prepend(newImg);
+                    }
+                }
+            } else {
+                const card = document.createElement('div');
+                card.className = 'gallery__card';
+                card.setAttribute('data-category', prod.category || 'decor');
+                card.setAttribute('data-price', prod.price);
+                card.setAttribute('data-rating', prod.rating || 5.0);
+                card.setAttribute('data-name', prod.name);
+
+                const badgeHtml = prod.badge 
+                    ? `<div class="gallery__card-badge gallery__card-badge--bestseller">${prod.badge}</div>` 
+                    : '';
+                const origPriceHtml = prod.original_price 
+                    ? `<span class="gallery__card-original">₹${Number(prod.original_price).toLocaleString('en-IN')}</span>` 
+                    : '';
+
+                const imageHtml = (prod.image_url && prod.image_url !== 'assets/hero_render.png')
+                    ? `<img src="${prod.image_url}" class="gallery__card-img" alt="${prod.name}" style="width:100%; height:100%; object-fit:cover;">`
+                    : `<div class="gallery__card-placeholder">
+                        <svg class="gallery__card-wireframe" width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2">
+                            <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+                        </svg>
+                       </div>`;
+
+                card.innerHTML = `
+                    <div class="gallery__card-image">
+                        ${imageHtml}
+                        ${badgeHtml}
+                        <div class="gallery__card-actions">
+                            <button class="gallery__quick-action gallery__wishlist-btn" data-id="${prod.id}" data-name="${prod.name}" data-price="${prod.price}" aria-label="Add to wishlist">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+                            </button>
+                        </div>
+                        <div class="gallery__card-hover-actions">
+                            <button class="btn btn--primary btn--sm gallery__add-cart" data-id="${prod.id}" data-name="${prod.name}" data-price="${prod.price}" data-category="${prod.category_name || prod.category}" aria-label="Add ${prod.name} to Cart">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+                                Add to Cart
+                            </button>
+                        </div>
+                    </div>
+                    <div class="gallery__card-body">
+                        <div class="gallery__card-top">
+                            <span class="gallery__card-category">${prod.category_name || prod.category}</span>
+                            <div class="gallery__card-rating">
+                                <svg width="12" height="12" viewBox="0 0 24 24" fill="#F5D5E0"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                                <span>${(prod.rating || 5.0).toFixed(1)} (${prod.reviews_count || 1})</span>
+                            </div>
+                        </div>
+                        <h3 class="gallery__card-title">${prod.name}</h3>
+                        <div class="gallery__card-meta">
+                            <span class="gallery__card-material">${prod.material || 'Tough Resin'}</span>
+                            <div class="gallery__card-pricing">
+                                <span class="gallery__card-price">₹${Number(prod.price).toLocaleString('en-IN')}</span>
+                                ${origPriceHtml}
+                            </div>
+                        </div>
+                    </div>
+                `;
+
+                const addCartBtn = card.querySelector('.gallery__add-cart');
+                if (addCartBtn) {
+                    addCartBtn.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        addToCart(prod.id, prod.name, prod.price, prod.category_name || prod.category);
+                        const orig = addCartBtn.innerHTML;
+                        addCartBtn.innerHTML = '✓ Added!';
+                        addCartBtn.style.background = '#10B981';
+                        setTimeout(() => {
+                            addCartBtn.innerHTML = orig;
+                            addCartBtn.style.background = '';
+                        }, 1800);
+                    });
+                }
+
+                shopGrid.prepend(card);
+            }
+        });
+
+        if (onUpdate) onUpdate();
+    } catch (err) {
+        console.warn('[Storefront] Could not sync dynamic products from /api/products:', err);
+    }
 }
 
 // ═══════════════════════════════════════════════════════════════════════════════
