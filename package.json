@@ -6,8 +6,7 @@
   "scripts": {
     "start": "node server.js",
     "dev": "node server.js",
-    "test": "node test-integrations.js",
-    "build": "echo \"Ready for Vercel Deployment\""
+    "test": "node test-integrations.js"
   },
   "repository": {
     "type": "git",
